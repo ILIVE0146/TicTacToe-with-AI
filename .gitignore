@@ -1,3 +1,2 @@
 .vscode
-build/relsease/*.exe
-build/debug/*.exe
+build
