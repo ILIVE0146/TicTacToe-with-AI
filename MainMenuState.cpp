@@ -40,8 +40,8 @@ namespace GameEngine{
 	}
 	void MainMenuState::Draw(float dt)
 	{
-		this->_data->window.clear(sf::Color::Red);
-		this->_data->window.draw(this->_background);
+		this->_data->window.clear(sf::Color(24,201,201));
+		//this->_data->window.draw(this->_background);
 		this->_data->window.draw(this->_playButton);
 		this->_data->window.draw(this->_playButtonOuter);
 		this->_data->window.draw(this->_title);
