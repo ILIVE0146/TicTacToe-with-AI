@@ -1,2 +1,4 @@
 .vscode
 build/*.dll
+build/app.exe
+build/Resources/res/*.xcf

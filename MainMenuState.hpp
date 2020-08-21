@@ -12,6 +12,7 @@ namespace GameEngine{
 		void Draw(float dt);
 	private:
 		GameDataRef _data;
+		sf::Text _play;
 		sf::Sprite _background;
 		sf::Sprite _playButton;
 		sf::Sprite _playButtonOuter;
