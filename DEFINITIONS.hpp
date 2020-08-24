@@ -12,13 +12,16 @@
 #define Pause_btn "Resources/res/Pause Button.png"
 #define X_piece "Resources/res/X.png"
 #define O_piece "Resources/res/O.png"
-#define X_piece 8
-#define O_piece 0
-#define Empty_piece -1
-#define Player_piece X_piece
-#define AI_piece O_piece
+#define resume_button "Resources/res/Resume Button.png"
+#define Home_button "Resources/res/Home Button.png"
+#define Grid_sprite_filePath "Resources/res/Grid.png"
+#define X_piece_number 8
+#define O_piece_number 0
+#define Empty_piece_number -1
+#define Player_piece X_piece_number
+#define AI_piece O_piece_number
 #define State_playing 98
-#define State_playing 97
+#define State_Paused 97
 #define State_won 96
 #define State_lose 95
 #define State_placing_piece 94

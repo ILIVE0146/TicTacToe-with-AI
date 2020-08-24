@@ -3,6 +3,7 @@
 #include "DEFINITIONS.hpp"
 #include <iostream>
 #include "playOptionState.hpp"
+
 namespace GameEngine{
 	MainMenuState::MainMenuState(GameDataRef data) : _data(data){ }
 	void MainMenuState::Init(){
@@ -23,10 +24,10 @@ namespace GameEngine{
 		*/
 		this->x.setTexture(this->_data->assets.GetTexture("X Win"));
 		this->o.setTexture(this->_data->assets.GetTexture("O Win"));
-		this->x.setPosition(100,200);
-		this->x.setScale(0.5,0.5);
-		this->o.setPosition(150,250);
-		this->o.setScale(0.4,0.4);
+		this->x.setPosition(250,200);
+		this->x.setScale( 0.5 * 1.25 , 0.5 * 1.25 );
+		this->o.setPosition(300,250);
+		this->o.setScale( 0.4 * 1.25 , 0.4 * 1.25 );
 		/*
 			for play button
 		*/
@@ -46,7 +47,8 @@ namespace GameEngine{
 			For title card
 		*/
 		this->_title.setTexture(this->_data->assets.GetTexture("Game Title"));
-		this->_title.setPosition((SCREEN_WIDTH / 2) - (this->_title.getGlobalBounds().width / 2), this->_title.getGlobalBounds().height * 0.1);
+		this->_title.setPosition((SCREEN_WIDTH / 2) - (this->_title.getGlobalBounds().width / 2) - 40, this->_title.getGlobalBounds().height * 0.1);
+		this->_title.setScale(1.15,1.15);
 		/*
 			For options button
 		*/	

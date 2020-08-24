@@ -3,6 +3,8 @@
 #include "DEFINITIONS.hpp"
 #include <iostream>
 #include "MainMenuState.hpp"
+#include "GameState.hpp"
+#include "pvp.hpp"
 namespace GameEngine{
 	PlayOptionState::PlayOptionState(GameDataRef data) : _data(data){ }
 	void PlayOptionState::Init(){
@@ -19,9 +21,9 @@ namespace GameEngine{
         this->pvpButton.setTexture(this->_data->assets.GetTexture("Play Button"));
         this->pvpText.setFont(this->_data->assets.GetFont("Felt"));
         this->pvpButton.setScale(0.1,0.1);
-        this->pvpText.setString("Human vs Human");
+        this->pvpText.setString("      PVP      ");
         this->pvpButton.setPosition(200,300);
-        this->pvpText.setPosition(this->pvpButton.getPosition().x + 10,this->pvpButton.getPosition().y + 5);
+        this->pvpText.setPosition(this->pvpButton.getPosition().x + 45,this->pvpButton.getPosition().y + 5);
         //For Easy AI
         this->easyAI.setTexture(this->_data->assets.GetTexture("Play Button"));
         this->easyAI_text.setFont(this->_data->assets.GetFont("Felt"));
@@ -81,6 +83,14 @@ namespace GameEngine{
             if (this->_data->input.IsSpriteClicked(this->back_button, sf::Mouse::Left, this->_data->window))
 			{
 				this->_data->machine.AddState(StateRef(new MainMenuState(_data)),true);
+			}
+            if (this->_data->input.IsSpriteClicked(this->easyAI, sf::Mouse::Left, this->_data->window))
+			{
+				this->_data->machine.AddState(StateRef(new GameState(_data)),true);
+			}
+            if (this->_data->input.IsSpriteClicked(this->pvpButton, sf::Mouse::Left, this->_data->window))
+			{
+				this->_data->machine.AddState(StateRef(new pvpState(_data)),true);
 			}
 		}
 	}
