@@ -9,15 +9,15 @@ namespace GameEngine{
 		/*
 			For loading data
 		*/
-        gamestate = State_playing;
-        turn = Player_piece;
-		this->_data->assets.LoadTexture("Grid Sprite",Grid_sprite_filePath);
-		this->_data->assets.LoadTexture("X Piece",X_piece);
-		this->_data->assets.LoadTexture("O Piece",O_piece);
+        gamestate = STATE_PLAYING;
+        turn = PLAYER_PIECE;
+		this->_data->assets.LoadTexture("Grid Sprite",GRID_SPRITE_FILEPATH);
+		this->_data->assets.LoadTexture("X Piece",X_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("O Piece",O_PIECE_FILEPATH);
 		this->turnText.setFont(this->_data->assets.GetFont("Felt"));
 		this->turnText.setString("'s turn");
 		this->turnText.setScale(2.5,2.5);
-        this->_data->assets.LoadTexture("Pause Button",Pause_btn);
+        this->_data->assets.LoadTexture("Pause Button",PAUSE_BUTTON);
         _pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
         _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width,_pauseButton.getPosition().y);
 		gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
@@ -44,7 +44,7 @@ namespace GameEngine{
                 this->_data->machine.AddState(StateRef(new PauseState(_data)),false);
             }
 			else if(this->_data->input.IsSpriteClicked(this->gridSprite,sf::Mouse::Left,this->_data->window)){
-				if(State_playing == gamestate)
+				if(STATE_PLAYING == gamestate)
 				{
 					this->checkAndPlacePiece();
 				}
@@ -74,21 +74,21 @@ namespace GameEngine{
 		}
 		if( gridArray[column - 1][row -1] == Empty_piece_number){
 			gridArray[column - 1][row - 1] = turn;
-			if(Player_piece == turn){
+			if(PLAYER_PIECE == turn){
 				gridPieces[column -1][row-1].setTexture(this->_data->assets.GetTexture("X Piece"));
 				this->checkPlayerHasWon(turn);
 				turn = AI_piece;
 			}else if(AI_piece == turn){
 				gridPieces[column -1][row-1].setTexture(this->_data->assets.GetTexture("O Piece"));
 				this->checkPlayerHasWon(turn);
-				turn = Player_piece;	
+				turn = PLAYER_PIECE;	
 			}
 			gridPieces[column - 1][row-1].setColor(sf::Color(255,255,255,255));
 		}
 	}
 	void pvpState::Update(float dt)
 	{
-		if(turn == Player_piece){
+		if(turn == PLAYER_PIECE){
 			this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
 			this->showCurrentPlayer.setPosition(25,800);
 			this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
@@ -100,7 +100,7 @@ namespace GameEngine{
 	}
 	void pvpState::Draw(float dt)
 	{
-		if(turn == Player_piece)
+		if(turn == PLAYER_PIECE)
 		{
 			this->_data->window.clear(sf::Color(250,181,127));
 		}
@@ -114,7 +114,7 @@ namespace GameEngine{
 				this->_data->window.draw(this->gridPieces[x][y]);
 			}
 		}
-		if(gamestate == State_playing)
+		if(gamestate == STATE_PLAYING)
 		{
 			this->_data->window.draw(this->showCurrentPlayer);
 			this->_data->window.draw(this->turnText);
@@ -167,7 +167,7 @@ namespace GameEngine{
 			gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
 			gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
 			gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-			if(Player_piece == pieceToCheck){
+			if(PLAYER_PIECE == pieceToCheck){
 				gamestate = State_won;
 			}else{
 				gamestate = State_lose;

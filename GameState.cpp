@@ -5,6 +5,7 @@
 #include "MainMenuState.hpp"
 #include "DEFINITIONS.hpp"
 #include "PauseState.hpp"
+#include "GameOverState.hpp"
 
 #include <iostream>
 
@@ -17,23 +18,23 @@ namespace GameEngine
 
 	void GameState::Init()
 	{
-		gamestate = State_playing;
-		turn = Player_piece;
+		gameState = STATE_PLAYING;
+		turn = PLAYER_PIECE;
 
-		this->Ai = new ai(turn, this->_data);
+		this->ai = new AI(turn, this->_data);
 
-		this->_data->assets.LoadTexture("Pause Button", Pause_btn);
-		this->_data->assets.LoadTexture("Grid Sprite", Grid_sprite_filePath);
-		this->_data->assets.LoadTexture("X Piece", X_piece);
-		this->_data->assets.LoadTexture("O Piece", O_piece);
-		this->_data->assets.LoadTexture("X Winning Piece", X_PATH);
-		this->_data->assets.LoadTexture("O Winning Piece", O_PATH);
+		this->_data->assets.LoadTexture("Pause Button", PAUSE_BUTTON);
+		this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
+		this->_data->assets.LoadTexture("X Piece", X_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("O Piece", O_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("X Winning Piece", X_WINNING_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("O Winning Piece", O_WINNING_PIECE_FILEPATH);
 
-		this->_pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
-		this->gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
+		_pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
+		_gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
 
-		this->_pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
-		this->gridSprite.setPosition((SCREEN_WIDTH / 2) - (this->gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (this->gridSprite.getGlobalBounds().height / 2));
+		_pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
+		_gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
 	
 		InitGridPieces();
 
@@ -41,7 +42,7 @@ namespace GameEngine
 		{
 			for (int y = 0; y < 3; y++)
 			{
-				gridArray[x][y] = Empty_piece_number;
+				_gridArray[x][y] = Empty_piece_number;
 			}
 		}
 	}
@@ -62,11 +63,11 @@ namespace GameEngine
 				// Switch To Game State
 				this->_data->machine.AddState(StateRef(new PauseState(_data)), false);
 			}
-			else if (this->_data->input.IsSpriteClicked(this->gridSprite, sf::Mouse::Left, this->_data->window))
+			else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
 			{
-				if (State_playing == gamestate)
+				if (STATE_PLAYING == gameState)
 				{
-					checkAndPlacePiece();
+					this->CheckAndPlacePiece();
 				}
 			}
 		}
@@ -74,22 +75,30 @@ namespace GameEngine
 
 	void GameState::Update(float dt)
 	{
-		
+		if (State_Draw == gameState || State_lose == gameState || State_won == gameState)
+		{
+			if (this->_clock.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER)
+			{
+				// Switch To Main Menu
+				this->_data->machine.AddState(StateRef(new GameOverState(_data)), true);
+			}
+		}
 	}
 
 	void GameState::Draw(float dt)
 	{
-		this->_data->window.clear(sf::Color(142,237,210));
+		this->_data->window.clear(sf::Color(250,181,127));
+
 
 		this->_data->window.draw( this->_pauseButton );
 
-		this->_data->window.draw( this->gridSprite );
+		this->_data->window.draw( this->_gridSprite );
 
 		for (int x = 0; x < 3; x++)
 		{
 			for (int y = 0; y < 3; y++)
 			{
-				this->_data->window.draw(this->gridPieces[x][y]);
+				this->_data->window.draw(this->_gridPieces[x][y]);
 			}
 		}
 
@@ -104,17 +113,17 @@ namespace GameEngine
 		{
 			for (int y = 0; y < 3; y++)
 			{
-				gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
-				gridPieces[x][y].setPosition(gridSprite.getPosition().x + (tempSpriteSize.x * x) - 7, gridSprite.getPosition().y + (tempSpriteSize.y * y) - 7);
-				gridPieces[x][y].setColor(sf::Color(255, 255, 255, 0));
+				_gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
+				_gridPieces[x][y].setPosition(_gridSprite.getPosition().x + (tempSpriteSize.x * x) - 7, _gridSprite.getPosition().y + (tempSpriteSize.y * y) - 7);
+				_gridPieces[x][y].setColor(sf::Color(255, 255, 255, 0));
 			}
 		}
 	}
 
-	void GameState::checkAndPlacePiece()
+	void GameState::CheckAndPlacePiece()
 	{
 		sf::Vector2i touchPoint = this->_data->input.GetMousePosition(this->_data->window);
-		sf::FloatRect gridSize = gridSprite.getGlobalBounds();
+		sf::FloatRect gridSize = _gridSprite.getGlobalBounds();
 		sf::Vector2f gapOutsideOfGrid = sf::Vector2f((SCREEN_WIDTH - gridSize.width) / 2, (SCREEN_HEIGHT - gridSize.height) / 2);
 
 		sf::Vector2f gridLocalTouchPos = sf::Vector2f(touchPoint.x - gapOutsideOfGrid.x, touchPoint.y - gapOutsideOfGrid.y);
@@ -153,22 +162,22 @@ namespace GameEngine
 			row = 3;
 		}
 
-		if (gridArray[column - 1][row - 1] == Empty_piece_number)
+		if (_gridArray[column - 1][row - 1] == Empty_piece_number)
 		{
-			gridArray[column - 1][row - 1] = turn;
+			_gridArray[column - 1][row - 1] = turn;
 
-			if (Player_piece == turn)
+			if (PLAYER_PIECE == turn)
 			{
-				gridPieces[column - 1][row - 1].setTexture(this->_data->assets.GetTexture("X Piece"));
+				_gridPieces[column - 1][row - 1].setTexture(this->_data->assets.GetTexture("X Piece"));
 
-				this->checkPlayerHasWon(turn);
+				this->CheckHasPlayerWon(turn);
 			}
 
-			gridPieces[column - 1][row - 1].setColor(sf::Color(255, 255, 255, 255));
+			_gridPieces[column - 1][row - 1].setColor(sf::Color(255, 255, 255, 255));
 		}
 	}
 
-	void GameState::checkPlayerHasWon(int player)
+	void GameState::CheckHasPlayerWon(int player)
 	{
 		Check3PiecesForMatch(0, 0, 1, 0, 2, 0, player);
 		Check3PiecesForMatch(0, 1, 1, 1, 2, 1, player);
@@ -179,11 +188,11 @@ namespace GameEngine
 		Check3PiecesForMatch(0, 0, 1, 1, 2, 2, player);
 		Check3PiecesForMatch(0, 2, 1, 1, 2, 0, player);
 
-		if (State_won != gamestate)
+		if (State_won != gameState)
 		{
-			gamestate = State_AI_playing;
+			gameState = State_AI_playing;
 
-			Ai->placePiece(&gridArray, gridPieces, &gamestate);
+			ai->PlacePiece(&_gridArray, _gridPieces, &gameState);
 
 			Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_piece);
 			Check3PiecesForMatch(0, 1, 1, 1, 2, 1, AI_piece);
@@ -201,7 +210,7 @@ namespace GameEngine
 		{
 			for (int y = 0; y < 3; y++)
 			{
-				if (Empty_piece_number != gridArray[x][y])
+				if (Empty_piece_number != _gridArray[x][y])
 				{
 					emptyNum--;
 				}
@@ -209,23 +218,24 @@ namespace GameEngine
 		}
 
 		// check if the game is a draw
-		if (0 == emptyNum && (State_won != gamestate) && (State_lose != gamestate))
+		if (0 == emptyNum && (State_won != gameState) && (State_lose != gameState))
 		{
-			gamestate = State_Draw;
+			gameState = State_Draw;
 		}
 
 		// check if the game is over
-		if (State_Draw == gamestate || State_lose == gamestate || State_won == gamestate)
+		if (State_Draw == gameState || State_lose == gameState || State_won == gameState)
 		{
 			// show game over
+			this->_clock.restart( );
 		}
 
-		std::cout << gamestate << std::endl;
+		std::cout << gameState << std::endl;
 	}
 
 	void GameState::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck)
 	{
-		if (pieceToCheck == gridArray[x1][y1] && pieceToCheck == gridArray[x2][y2] && pieceToCheck == gridArray[x3][y3])
+		if (pieceToCheck == _gridArray[x1][y1] && pieceToCheck == _gridArray[x2][y2] && pieceToCheck == _gridArray[x3][y3])
 		{
 			std::string winningPieceStr;
 
@@ -238,18 +248,18 @@ namespace GameEngine
 				winningPieceStr = "X Winning Piece";
 			}
 
-			gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-			gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-			gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+			_gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+			_gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+			_gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
 
 
-			if (Player_piece == pieceToCheck)
+			if (PLAYER_PIECE == pieceToCheck)
 			{
-				gamestate = State_won;
+				gameState = State_won;
 			}
 			else
 			{
-				gamestate = State_lose;
+				gameState = State_lose;
 			}
 		}
 	}

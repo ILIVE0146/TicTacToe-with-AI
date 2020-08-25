@@ -15,8 +15,8 @@ namespace GameEngine{
 		this->_data->assets.LoadTexture("Play Button Outer", MAIN_MENU_PLAY_BUTTON_OUTER);
 		this->_data->assets.LoadTexture("Game Title", MAIN_MENU_TITLE_FILEPATH);
 		this->_data->assets.LoadTexture("play botton alternative",PLAY_BTN_ALTER );
-		this->_data->assets.LoadTexture("X Win", X_PATH);
-		this->_data->assets.LoadTexture("O Win",O_PATH);
+		this->_data->assets.LoadTexture("X Win", X_WINNING_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("O Win",O_WINNING_PIECE_FILEPATH);
 		//this->_background.setTexture(this->_data->assets.GetTexture("Background"));
 		this->_data->assets.LoadFont("Felt",FELT_FRONT);
 		/*
