@@ -6,7 +6,8 @@
 #include "DEFINITIONS.hpp"
 #include "PauseState.hpp"
 #include "GameOverState.hpp"
-
+#include "gameWonState.hpp"
+#include "gameDrawState.hpp"
 #include <iostream>
 
 namespace GameEngine
@@ -79,8 +80,13 @@ namespace GameEngine
 		{
 			if (this->_clock.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER)
 			{
-				// Switch To Main Menu
-				this->_data->machine.AddState(StateRef(new GameOverState(_data)), true);
+				if(gameState == State_lose){
+					this->_data->machine.AddState(StateRef(new GameOverState(_data)), true);
+				}else if(State_Draw == gameState){
+					this->_data->machine.AddState(StateRef(new GameDrawState(_data)), true);
+				}else{
+					this->_data->machine.AddState(StateRef(new GameWonState(_data)), true);
+				}
 			}
 		}
 	}

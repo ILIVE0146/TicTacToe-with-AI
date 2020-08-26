@@ -59,7 +59,7 @@ namespace GameEngine
 
 	void GameOverState::Draw(float dt)
 	{
-		this->_data->window.clear(sf::Color::Red);
+		this->_data->window.clear(sf::Color(168, 84, 50));
 
 		this->_data->window.draw(this->_retryButton);
 		this->_data->window.draw(this->_homeButton);
