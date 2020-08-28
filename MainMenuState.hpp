@@ -4,13 +4,6 @@
 #include "Game.hpp"
 namespace GameEngine{
 	class MainMenuState : public State{
-	public:
-		MainMenuState(GameDataRef data);
-		void Init();
-		void HandleInput();
-		void Update(float dt);
-		void Draw(float dt);
-	private:
 		GameDataRef _data;
 		sf::Sprite x;
 		sf::Sprite o;
@@ -23,5 +16,11 @@ namespace GameEngine{
 		sf::Sprite _title;
 		sf::Sprite _option;
 		sf::Sprite _exit_btn;
+	public:
+		MainMenuState(GameDataRef data);
+		void Init();
+		void HandleInput();
+		void Update(float dt);
+		void Draw(float dt);
 	};
 }

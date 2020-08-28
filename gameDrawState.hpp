@@ -8,6 +8,11 @@ namespace GameEngine
 {
 	class GameDrawState : public State
 	{
+		GameDataRef _data;
+
+		sf::Sprite _retryButton;
+		sf::Sprite _homeButton;
+
 	public:
 		GameDrawState(GameDataRef data);
 
@@ -16,12 +21,5 @@ namespace GameEngine
 		void HandleInput();
 		void Update(float dt);
 		void Draw(float dt);
-
-	private:
-		GameDataRef _data;
-
-		sf::Sprite _retryButton;
-		sf::Sprite _homeButton;
-
 	};
 }
