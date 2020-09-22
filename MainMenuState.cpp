@@ -3,6 +3,7 @@
 #include "DEFINITIONS.hpp"
 #include <iostream>
 #include "playOptionState.hpp"
+#include "unbeatableAI.hpp"
 
 namespace GameEngine{
 	MainMenuState::MainMenuState(GameDataRef data) : _data(data){ }
@@ -97,7 +98,7 @@ namespace GameEngine{
 			}
 			if (this->_data->input.IsSpriteClicked(this->_option, sf::Mouse::Left, this->_data->window))
 			{
-				std::cout << "Go To options Screen" << std::endl;
+				std::cout<<"Go to option screen"<<std::endl;
 			}
 			if(this->_exit_btn.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
 				this->_exit_btn.setTexture(this->_data->assets.GetTexture("play botton alternative"));

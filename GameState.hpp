@@ -5,6 +5,7 @@
 #include "Game.hpp"
 
 #include "ai.hpp"
+#include "unbeatableAI.hpp"
 
 namespace GameEngine
 {
@@ -25,6 +26,7 @@ namespace GameEngine
 		int gameState;
 
 		AI *ai;
+		unbeatableAI *unbeatableAI;
 
 		sf::Clock _clock;
 	public:
