@@ -9,7 +9,7 @@
 
 namespace GameEngine
 {
-	class GameState : public State
+	class unbeatableGameState : public State
 	{
 		GameDataRef _data;
 
@@ -25,11 +25,11 @@ namespace GameEngine
 		int turn;
 		int gameState;
 
-		AI *ai;
+		unbeatableAI *ai;
 
 		sf::Clock _clock;
 	public:
-		GameState(GameDataRef data);
+		unbeatableGameState(GameDataRef data);
 
 		void Init();
 
