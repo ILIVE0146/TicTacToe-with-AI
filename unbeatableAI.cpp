@@ -52,32 +52,7 @@ namespace GameEngine
 	{
 		try
 		{
-			// check if AI can win
-			for (int i = 0; i < checkMatchVector.size(); i++)
-			{
-				CheckSection(checkMatchVector[i][0], checkMatchVector[i][1], checkMatchVector[i][2], checkMatchVector[i][3], checkMatchVector[i][4], checkMatchVector[i][5], AI_piece, gridArray, gridPieces);
-			}
-
-			// check if player can win
-			for (int i = 0; i < checkMatchVector.size(); i++)
-			{
-				CheckSection(checkMatchVector[i][0], checkMatchVector[i][1], checkMatchVector[i][2], checkMatchVector[i][3], checkMatchVector[i][4], checkMatchVector[i][5], PLAYER_PIECE, gridArray, gridPieces);
-			}
-
-			// check if center is empty
-			CheckIfPieceIsEmpty(1, 1, gridArray, gridPieces);
-
-			// check if a corner is empty
-			CheckIfPieceIsEmpty(0, 2, gridArray, gridPieces);
-			CheckIfPieceIsEmpty(2, 2, gridArray, gridPieces);
-			CheckIfPieceIsEmpty(0, 0, gridArray, gridPieces);
-			CheckIfPieceIsEmpty(2, 0, gridArray, gridPieces);
-
-			// check for any other empty piece
-			CheckIfPieceIsEmpty(1, 2, gridArray, gridPieces);
-			CheckIfPieceIsEmpty(0, 1, gridArray, gridPieces);
-			CheckIfPieceIsEmpty(2, 1, gridArray, gridPieces);
-			CheckIfPieceIsEmpty(1, 0, gridArray, gridPieces);
+			
 		}
 		catch (int error)
 		{
@@ -87,22 +62,7 @@ namespace GameEngine
 		*gameState = STATE_PLAYING;
 	}
 
-	void unbeatableAI::CheckSection(int x1, int y1, int x2, int y2, int X, int Y, int pieceToCheck, int(*gridArray)[3][3], sf::Sprite gridPieces[3][3])
-	{
-		// check if 2 pieces match
-		if ((*gridArray)[x1][y1] == pieceToCheck && (*gridArray)[x2][y2] == pieceToCheck)
-		{
-			if (Empty_piece_number == (*gridArray)[X][Y])
-			{
-				(*gridArray)[X][Y] = AI_piece;
-				gridPieces[X][Y].setTexture(this->_data->assets.GetTexture("O Piece"));
-
-				gridPieces[X][Y].setColor(sf::Color(255, 255, 255, 255));
-
-				throw - 1;
-			}
-		}
-	}
+	
 
 	void unbeatableAI::CheckIfPieceIsEmpty(int X, int Y, int(*gridArray)[3][3], sf::Sprite gridPieces[3][3])
 	{

@@ -5,7 +5,7 @@
 #include "MainMenuState.hpp"
 #include "GameState.hpp"
 #include "pvp.hpp"
-#include "unbeatableAI.hpp"
+#include "unbeatableGameState.hpp"
 namespace GameEngine{
 	PlayOptionState::PlayOptionState(GameDataRef data) : _data(data){ }
 	void PlayOptionState::Init(){
@@ -95,7 +95,7 @@ namespace GameEngine{
 			}
 			if (this->_data->input.IsSpriteClicked(this->unbeatable_mode, sf::Mouse::Left, this->_data->window))
 			{
-				this->_data->machine.AddState(StateRef(new GameState(_data)),true);
+				this->_data->machine.AddState(StateRef(new unbeatableGameState(_data)),true);
 			}
 		}
 	}
