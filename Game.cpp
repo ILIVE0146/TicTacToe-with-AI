@@ -5,7 +5,7 @@ namespace GameEngine
 	Game::Game(int width, int height, std::string title)
 	{
 		_data->window.create(sf::VideoMode(width, height), title, sf::Style::Close | sf::Style::Titlebar);
-		_data->window.setFramerateLimit(90);
+		_data->window.setFramerateLimit(60);
 		_data->machine.AddState(StateRef(new MainMenuState(this->_data)));
 
 		this->Run();

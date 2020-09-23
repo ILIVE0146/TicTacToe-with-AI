@@ -47,8 +47,8 @@ namespace GameEngine{
 			For title card
 		*/
 		this->_title.setTexture(this->_data->assets.GetTexture("Game Title"));
-		this->_title.setPosition((SCREEN_WIDTH / 2) - (this->_title.getGlobalBounds().width / 2) - 40, this->_title.getGlobalBounds().height * 0.1);
-		this->_title.setScale(1.15,1.15);
+		this->_title.setPosition((SCREEN_WIDTH / 2) - (this->_title.getGlobalBounds().width / 2) - 40, 150);
+		this->_title.setScale(1.3,1.3);
 		/*
 			For options button
 		*/	

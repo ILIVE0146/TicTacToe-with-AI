@@ -2,22 +2,20 @@
 #include <memory>
 #include <stack>
 #include "State.hpp"
-namespace GameEngine
-{
+namespace GameEngine{
 	typedef std::unique_ptr<State> StateRef;
-	class StateMachine
-	{
-		std::stack<StateRef> _states;
-		StateRef _newState;
-		bool _isRemoving;
-		bool _isAdding, _isReplacing;
-
+	class StateMachine{
 	public:
-		StateMachine() {}
-		~StateMachine() {}
+		StateMachine() { }
+		~StateMachine() { }
 		void AddState(StateRef newState, bool isReplacing = true);
 		void RemoveState();
 		void ProcessStateChanges();
 		StateRef &GetActiveState();
+	private:
+		std::stack<StateRef> _states;
+		StateRef _newState;
+		bool _isRemoving;
+		bool _isAdding, _isReplacing;
 	};
-} // namespace GameEngine
+}

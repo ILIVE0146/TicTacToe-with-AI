@@ -3,9 +3,9 @@
 #include "State.hpp"
 #include "Game.hpp"
 namespace GameEngine{
-	class pvpState : public State{
+	class unbeatable : public State{
 	public:
-		pvpState(GameDataRef data);
+		unbeatable(GameDataRef data);
 		void Init();
 		void HandleInput();
 		void Update(float dt);

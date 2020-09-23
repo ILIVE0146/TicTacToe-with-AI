@@ -21,6 +21,10 @@ namespace GameEngine
 
 	class Game
 	{
+	public:
+		Game(int width, int height, std::string title);
+
+	private:
 		// Updates run at 60 per second.
 		const float dt = 1.0f / 60.0f;
 		sf::Clock _clock;
@@ -28,7 +32,5 @@ namespace GameEngine
 		GameDataRef _data = std::make_shared<GameData>();
 
 		void Run();
-	public:
-		Game(int width, int height, std::string title);
 	};
 }
