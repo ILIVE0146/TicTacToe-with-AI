@@ -1,7 +1,7 @@
 #include <sstream>
 #include "playOptionState.hpp"
 #include "DEFINITIONS.hpp"
-#include <iostream>
+
 #include "MainMenuState.hpp"
 #include "GameState.hpp"
 #include "pvp.hpp"
@@ -91,7 +91,7 @@ namespace GameEngine{
 			}
             if (this->_data->input.IsSpriteClicked(this->pvpButton, sf::Mouse::Left, this->_data->window))
 			{
-				this->_data->machine.AddState(StateRef(new pvpState(_data)),true);
+				this->_data->machine.AddState(StateRef(new pvp(_data)),true);
 			}
 			if( this->_data->input.IsSpriteClicked(this->unbeatable_mode,sf::Mouse::Left,this->_data->window)){
 				this->_data->machine.AddState(StateRef(new unbeatable(_data)),true);

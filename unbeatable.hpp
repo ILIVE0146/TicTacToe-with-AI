@@ -25,5 +25,9 @@ namespace GameEngine{
 		int gridArray[3][3];
         int turn;
         int gamestate; 
+		sf::Sprite _retryButton;
+		sf::Sprite _homeButton;
+		int temp;
+		sf::Clock timer;
 	};
 }

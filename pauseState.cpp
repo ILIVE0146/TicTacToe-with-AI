@@ -1,7 +1,6 @@
 #include <sstream>
 #include "pauseState.hpp"
 #include "DEFINITIONS.hpp"
-#include <iostream>
 #include "GameState.hpp"
 #include "MainMenuState.hpp"
 namespace GameEngine{
@@ -10,8 +9,7 @@ namespace GameEngine{
 		/*
 			For loading data
 		*/
-        this->_data->assets.LoadTexture("Home Button",Home_button);
-        this->_data->assets.LoadTexture("Resume Button",resume_button);
+        
 		this->resumeButton.setTexture(this->_data->assets.GetTexture("Resume Button"));
 		this->homebuton.setTexture(this->_data->assets.GetTexture("Home Button"));
 		this->resumeButton.setPosition((this->_data->window.getSize().x /2) - (this->resumeButton.getLocalBounds().width/2),(this->_data->window.getSize().y/3) - (this->resumeButton.getLocalBounds().height/2));

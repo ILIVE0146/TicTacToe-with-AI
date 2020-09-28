@@ -1,19 +1,23 @@
 #include <sstream>
 #include "unbeatable.hpp"
 #include "DEFINITIONS.hpp"
-#include <iostream>
+
 #include "pauseState.hpp"
+#include "MainMenuState.hpp"
 namespace GameEngine{
 	unbeatable::unbeatable(GameDataRef data) : _data(data){ }
 	void unbeatable::Init(){
+		
+		this->_retryButton.setTexture(this->_data->assets.GetTexture("Retry Button"));
+		this->_homeButton.setTexture(this->_data->assets.GetTexture("Home Button"));
+
+		this->_retryButton.setPosition((this->_data->window.getSize().x / 2) - (this->_retryButton.getLocalBounds().width / 2), (this->_data->window.getSize().y / 3) - (this->_retryButton.getLocalBounds().height / 2));
+		this->_homeButton.setPosition((this->_data->window.getSize().x / 2) - (this->_homeButton.getLocalBounds().width / 2), (this->_data->window.getSize().y / 3 * 2) - (this->_homeButton.getLocalBounds().height / 2));
 		/*
 			For loading data
 		*/
         gamestate = STATE_PLAYING;
         turn = PLAYER_PIECE;
-		this->_data->assets.LoadTexture("Grid Sprite",GRID_SPRITE_FILEPATH);
-		this->_data->assets.LoadTexture("X Piece",X_PIECE_FILEPATH);
-		this->_data->assets.LoadTexture("O Piece",O_PIECE_FILEPATH);
 		this->turnText.setFont(this->_data->assets.GetFont("Felt"));
 		this->turnText.setString("'s turn");
 		this->turnText.setScale(2.5,2.5);
@@ -40,13 +44,23 @@ namespace GameEngine{
 			{
 				this->_data->window.close();
 			}
-            if(this->_data->input.IsSpriteClicked(this->_pauseButton,sf::Mouse::Left,this->_data->window)){
-                this->_data->machine.AddState(StateRef(new PauseState(_data)),false);
-            }
-			else if(this->_data->input.IsSpriteClicked(this->gridSprite,sf::Mouse::Left,this->_data->window)){
-				if(STATE_PLAYING == gamestate)
-				{
-					this->checkAndPlacePiece();
+            
+			if(gamestate != STATE_PLAYING){
+					if(this->_data->input.IsSpriteClicked(this->_homeButton,sf::Mouse::Left,this->_data->window)){
+						this->_data->machine.AddState(StateRef(new MainMenuState(_data)),true);
+					}
+					else if(this->_data->input.IsSpriteClicked(this->_retryButton,sf::Mouse::Left,this->_data->window)){
+						this->_data->machine.AddState(StateRef(new unbeatable(_data)),true);
+					}
+			}else{
+				if(this->_data->input.IsSpriteClicked(this->_pauseButton,sf::Mouse::Left,this->_data->window)){
+                	this->_data->machine.AddState(StateRef(new PauseState(_data)),false);
+            	}
+				else if(this->_data->input.IsSpriteClicked(this->gridSprite,sf::Mouse::Left,this->_data->window)){
+					if(STATE_PLAYING == gamestate)
+					{
+						this->checkAndPlacePiece();
+					}
 				}
 			}
 		}
@@ -88,37 +102,75 @@ namespace GameEngine{
 	}
 	void unbeatable::Update(float dt)
 	{
-		if(turn == PLAYER_PIECE){
-			this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
-			this->showCurrentPlayer.setPosition(25,800);
-			this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
-		}else{
-			this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("O Piece"));
-			this->showCurrentPlayer.setPosition(300,800);
-			this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
+		if(gamestate == state_delay){
+			
+			if(timer.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER){
+				gamestate = temp;
+			}
+			
+		}
+		if(gamestate == STATE_PLAYING){
+			if(turn == PLAYER_PIECE){
+				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
+				this->showCurrentPlayer.setPosition(25,800);
+				this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
+			}else{
+				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("O Piece"));
+				this->showCurrentPlayer.setPosition(300,800);
+				this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
+			}
+		}else if(gamestate != state_delay){
+			if(gamestate == State_won){
+				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
+			}else if(gamestate == State_lose){
+				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("O Piece"));
+			}else{
+				this->showCurrentPlayer.setColor(sf::Color(0,0,0,0));
+			}
+			if(gamestate != State_Draw){
+				this->turnText.setString(" - WON");
+			}else{
+				this->turnText.setString("DRAW");
+			}
+			this->showCurrentPlayer.setPosition(150,100);
+			this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75, this->showCurrentPlayer.getPosition().y - 10);
 		}
 	}
 	void unbeatable::Draw(float dt)
 	{
-		if(turn == PLAYER_PIECE)
+		if(gamestate != STATE_PLAYING && gamestate != state_delay)
 		{
-			this->_data->window.clear(sf::Color(250,181,127));
-		}
-		else{
-			this->_data->window.clear(sf::Color(127,197,250));
-		}
-		this->_data->window.draw(this->_pauseButton);
-        this->_data->window.draw(this->gridSprite);
-		for(int x =0;x<3;x++){
-			for(int y=0;y<3;y++){
-				this->_data->window.draw(this->gridPieces[x][y]);
+			if(gamestate == State_won){
+				this->_data->window.clear(sf::Color(250,181,127));
+			}
+			else if(gamestate == State_lose)
+			{
+				this->_data->window.clear(sf::Color(127,197,250));
+			}
+			else{
+				this->_data->window.clear(sf::Color( 33, 176, 164));
+			}
+			this->_data->window.draw(this->_retryButton);
+			this->_data->window.draw(this->_homeButton);
+		}else{
+			if(turn == PLAYER_PIECE)
+			{
+				this->_data->window.clear(sf::Color(250,181,127));
+			}
+			else{
+				this->_data->window.clear(sf::Color(127,197,250));
+			}
+			this->_data->window.draw(this->_pauseButton);
+        	this->_data->window.draw(this->gridSprite);
+			for(int x =0;x<3;x++){
+				for(int y=0;y<3;y++){
+					this->_data->window.draw(this->gridPieces[x][y]);
+				}
 			}
 		}
-		if(gamestate == STATE_PLAYING)
-		{
-			this->_data->window.draw(this->showCurrentPlayer);
-			this->_data->window.draw(this->turnText);
-		}
+		this->_data->window.draw(this->showCurrentPlayer);
+		this->_data->window.draw(this->turnText);
+		
 		this->_data->window.display();
 	}
 	void unbeatable::InitGridPieces(){
@@ -149,12 +201,14 @@ namespace GameEngine{
 			}
 		}
 		if((0 == emptyNum) && (State_won != gamestate)&& (State_lose != gamestate)){
-			gamestate = State_Draw;
+			gamestate = state_delay;
+			this->temp = State_Draw;
 		}
-		if(State_Draw == gamestate || State_won == gamestate || State_lose == gamestate){
-			//show game over
+		if (gamestate == state_delay)
+		{
+			// show game over
+			this->timer.restart( );
 		}
-		std::cout<<gamestate<<std::endl;
 	}
 	void unbeatable::Check3PiecesForMatch(int x1, int y1 , int x2, int y2 ,int x3, int y3 ,int pieceToCheck){
 		if( pieceToCheck == gridArray[x1][y1] && pieceToCheck == gridArray[x2][y2] && pieceToCheck == gridArray[x3][y3]){
@@ -168,9 +222,11 @@ namespace GameEngine{
 			gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
 			gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
 			if(PLAYER_PIECE == pieceToCheck){
-				gamestate = State_won;
+				gamestate = state_delay;
+				this->temp = State_won;
 			}else{
-				gamestate = State_lose;
+				gamestate = state_delay;
+				this->temp = State_lose;
 			}
 		}
 	}

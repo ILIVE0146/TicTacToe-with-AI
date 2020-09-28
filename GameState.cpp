@@ -5,10 +5,7 @@
 #include "MainMenuState.hpp"
 #include "DEFINITIONS.hpp"
 #include "PauseState.hpp"
-#include "GameOverState.hpp"
-#include "gameWonState.hpp"
-#include "gameDrawState.hpp"
-#include <iostream>
+
 
 namespace GameEngine
 {
@@ -21,15 +18,20 @@ namespace GameEngine
 	{
 		gameState = STATE_PLAYING;
 		turn = PLAYER_PIECE;
-
+		this->_retryButton.setTexture(this->_data->assets.GetTexture("Retry Button"));
+		this->_homeButton.setTexture(this->_data->assets.GetTexture("Home Button"));
+		this->_retryButton.setPosition((this->_data->window.getSize().x / 2) - (this->_retryButton.getLocalBounds().width / 2), (this->_data->window.getSize().y / 3) - (this->_retryButton.getLocalBounds().height / 2));
+		this->_homeButton.setPosition((this->_data->window.getSize().x / 2) - (this->_homeButton.getLocalBounds().width / 2), (this->_data->window.getSize().y / 3 * 2) - (this->_homeButton.getLocalBounds().height / 2));
+		this->turnText.setFont(this->_data->assets.GetFont("Felt"));
+		this->turnText.setScale(2.5,2.5);
+		
+		
+		
+		
+		
+		
 		this->ai = new AI(turn, this->_data);
 
-		this->_data->assets.LoadTexture("Pause Button", PAUSE_BUTTON);
-		this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
-		this->_data->assets.LoadTexture("X Piece", X_PIECE_FILEPATH);
-		this->_data->assets.LoadTexture("O Piece", O_PIECE_FILEPATH);
-		this->_data->assets.LoadTexture("X Winning Piece", X_WINNING_PIECE_FILEPATH);
-		this->_data->assets.LoadTexture("O Winning Piece", O_WINNING_PIECE_FILEPATH);
 
 		_pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
 		_gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
@@ -58,53 +60,76 @@ namespace GameEngine
 			{
 				this->_data->window.close();
 			}
-
-			if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
+			if(gameState == STATE_PLAYING)
 			{
-				// Switch To Game State
-				this->_data->machine.AddState(StateRef(new PauseState(_data)), false);
-			}
-			else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
-			{
-				if (STATE_PLAYING == gameState)
+				if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
 				{
-					this->CheckAndPlacePiece();
+					// Switch To Game State
+					this->_data->machine.AddState(StateRef(new PauseState(_data)), false);
 				}
+				else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
+				{
+					if (STATE_PLAYING == gameState)
+					{
+						this->CheckAndPlacePiece();
+					}
+				}	
+			}else if(gameState != STATE_PLAYING && gameState != state_delay){
+				if(this->_data->input.IsSpriteClicked(this->_homeButton,sf::Mouse::Left,this->_data->window)){
+						this->_data->machine.AddState(StateRef(new MainMenuState(_data)),true);
+					}
+					else if(this->_data->input.IsSpriteClicked(this->_retryButton,sf::Mouse::Left,this->_data->window)){
+						this->_data->machine.AddState(StateRef(new GameState(_data)),true);
+					}
 			}
 		}
 	}
 
 	void GameState::Update(float dt)
 	{
-		if (State_Draw == gameState || State_lose == gameState || State_won == gameState)
-		{
-			if (this->_clock.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER)
-			{
-				if(gameState == State_lose){
-					this->_data->machine.AddState(StateRef(new GameOverState(_data)), true);
-				}else if(State_Draw == gameState){
-					this->_data->machine.AddState(StateRef(new GameDrawState(_data)), true);
-				}else{
-					this->_data->machine.AddState(StateRef(new GameWonState(_data)), true);
-				}
+		if(gameState == state_delay){
+			
+			if(_clock.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER){
+				gameState = temp;
 			}
+			
+		}
+		if(gameState != state_delay && gameState != STATE_PLAYING){
+			this->turnText.setPosition(225, 90);
+			if(gameState == State_won){
+				this->turnText.setString("YOU WON");
+				this->turnText.setPosition(175,90);
+			}
+			else if(gameState == State_lose ){
+				this->turnText.setString("YOU LOST");
+				this->turnText.setPosition(175,90);
+			}else{
+				this->turnText.setString("DRAW");
+			}
+			
 		}
 	}
 
 	void GameState::Draw(float dt)
 	{
 		this->_data->window.clear(sf::Color(250,181,127));
+		if(gameState != STATE_PLAYING && gameState != state_delay){
+			this->_data->window.draw(this->_retryButton);
+			this->_data->window.draw(this->_homeButton);
+			this->_data->window.draw(this->turnText);
+		}
+		else if(gameState == STATE_PLAYING || gameState == state_delay){
 
+			this->_data->window.draw( this->_pauseButton );
 
-		this->_data->window.draw( this->_pauseButton );
+			this->_data->window.draw( this->_gridSprite );
 
-		this->_data->window.draw( this->_gridSprite );
-
-		for (int x = 0; x < 3; x++)
-		{
-			for (int y = 0; y < 3; y++)
+			for (int x = 0; x < 3; x++)
 			{
-				this->_data->window.draw(this->_gridPieces[x][y]);
+				for (int y = 0; y < 3; y++)
+				{
+					this->_data->window.draw(this->_gridPieces[x][y]);
+				}
 			}
 		}
 
@@ -226,17 +251,17 @@ namespace GameEngine
 		// check if the game is a draw
 		if (0 == emptyNum && (State_won != gameState) && (State_lose != gameState))
 		{
-			gameState = State_Draw;
+			gameState = state_delay;
+			temp=State_Draw;
 		}
 
 		// check if the game is over
-		if (State_Draw == gameState || State_lose == gameState || State_won == gameState)
+		if (gameState == state_delay)
 		{
 			// show game over
 			this->_clock.restart( );
 		}
 
-		std::cout << gameState << std::endl;
 	}
 
 	void GameState::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck)
@@ -259,13 +284,12 @@ namespace GameEngine
 			_gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
 
 
-			if (PLAYER_PIECE == pieceToCheck)
-			{
-				gameState = State_won;
-			}
-			else
-			{
-				gameState = State_lose;
+			if(PLAYER_PIECE == pieceToCheck){
+				gameState = state_delay;
+				this->temp = State_won;
+			}else{
+				gameState = state_delay;
+				this->temp = State_lose;
 			}
 		}
 	}

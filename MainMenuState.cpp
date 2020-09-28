@@ -1,7 +1,6 @@
 #include <sstream>
 #include "MainMenuState.hpp"
 #include "DEFINITIONS.hpp"
-#include <iostream>
 #include "playOptionState.hpp"
 
 namespace GameEngine{
@@ -10,6 +9,15 @@ namespace GameEngine{
 		/*
 			For loading data
 		*/
+		this->_data->assets.LoadTexture("Resume Button",resume_button);
+		this->_data->assets.LoadTexture("Pause Button", PAUSE_BUTTON);
+		this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
+		this->_data->assets.LoadTexture("X Piece", X_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("O Piece", O_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("X Winning Piece", X_WINNING_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("O Winning Piece", O_WINNING_PIECE_FILEPATH);
+		this->_data->assets.LoadTexture("Retry Button", "Resources/res/Retry Button.png");
+		this->_data->assets.LoadTexture("Home Button", "Resources/res/Home Button.png");
 		//this->_data->assets.LoadTexture("Background", MAIN_MENU_BACKGROUND_FILEPATH);
 		this->_data->assets.LoadTexture("Play Button", PLAY_BUTTON);
 		this->_data->assets.LoadTexture("Play Button Outer", MAIN_MENU_PLAY_BUTTON_OUTER);
@@ -97,7 +105,7 @@ namespace GameEngine{
 			}
 			if (this->_data->input.IsSpriteClicked(this->_option, sf::Mouse::Left, this->_data->window))
 			{
-				std::cout << "Go To options Screen" << std::endl;
+				
 			}
 			if(this->_exit_btn.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
 				this->_exit_btn.setTexture(this->_data->assets.GetTexture("play botton alternative"));

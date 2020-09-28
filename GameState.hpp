@@ -34,13 +34,16 @@ namespace GameEngine
 		sf::Sprite _gridSprite;
 
 		sf::Sprite _gridPieces[3][3];
+		sf::Sprite _homeButton;
+		sf::Sprite _retryButton;
 		int _gridArray[3][3];
 
 		int turn;
 		int gameState;
-
+		int temp;
 		AI *ai;
-
 		sf::Clock _clock;
+
+		sf::Text turnText;
 	};
 }

@@ -27,4 +27,5 @@
 #define State_placing_piece 94
 #define State_AI_playing 93
 #define State_Draw 92
-#define TIME_BEFORE_SHOWING_GAME_OVER 1
+#define state_delay 91
+#define TIME_BEFORE_SHOWING_GAME_OVER 2
