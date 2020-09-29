@@ -200,7 +200,7 @@ namespace GameEngine{
 				}
 			}
 		}
-		if((0 == emptyNum) && (State_won != gamestate)&& (State_lose != gamestate)){
+		if((0 == emptyNum) && (state_delay != gamestate)){
 			gamestate = state_delay;
 			this->temp = State_Draw;
 		}
