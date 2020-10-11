@@ -7,8 +7,8 @@ AssetManager.cpp
 Definitions.hpp
 Game.cpp
 Game.hpp
-GaneState.cpp
-GaneState.hpp
+GameState.cpp
+GameState.hpp
 InputManager.cpp
 InputManager.hpp
 main.cpp
@@ -31,14 +31,14 @@ build/sfml-graphics-2.dll
 build/sfml-network-2.dll
 build/sfml-system-2.dll
 build/sfml-window-2.dll
-build/Resources/fonts/arial
-build/Resources/fonts/Marker Felt
+build/Resources/fonts/arial.ttf
+build/Resources/fonts/Marker Felt.ttf
 build/Resources/res/2.png
 build/Resources/res/Achievements.png
 build/Resources/res/alt.png
 build/Resources/res/buttonAnimation.png
 build/Resources/res/ButtonOrange.png
-build/Resources/res/buttonSandstone.png
+build/Resources/res/butttonSandstone.png
 build/Resources/res/Grid.png
 build/Resources/res/Home Button.png
 build/Resources/res/home_button_nirmal.png
