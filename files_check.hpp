@@ -28,15 +28,20 @@ public:
 
     void check_image_exist()
     {
+        bool missing=false;
         for (unsigned int i = 0; i < fileName.size(); i++)
         {
             std::ifstream infile(fileName[i]);
             if (!infile.good())
             {
-                cout << "Some image files are missing" << endl << fileName[i] << endl;
-                exit(0); // exit
+                if(!missing)
+                    cout<<"Missing files:"<<endl;
+                missing=true;
+                cout << fileName[i] << endl;
             }
         }
+        if(missing)
+            exit(0);
         cout<<"Image files check finished"<<endl;
     }
 };
