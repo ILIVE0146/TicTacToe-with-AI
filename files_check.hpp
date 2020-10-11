@@ -26,7 +26,7 @@ public:
         fileName.push_back(GRID_SPRITE_FILEPATH);
     }
 
-    void check_image_exist()
+    bool check_image_exist()
     {
         bool missing=false;
         for (unsigned int i = 0; i < fileName.size(); i++)
@@ -41,7 +41,12 @@ public:
             }
         }
         if(missing)
-            exit(0);
+            //false for missing files
+            return false;
+        else{
+            //true for no files are missing
+            return true;
+        }
         cout<<"Image files check finished"<<endl;
     }
 };
