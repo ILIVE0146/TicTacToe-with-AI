@@ -222,8 +222,7 @@ namespace GameEngine
 		if (State_won != gameState)
 		{
 			gameState = State_AI_playing;
-			int temp[2];
-		
+			
 			ai->checkForOptimalSolutionToPlace(&_gridArray, &_gridPieces, &gameState);
 			
 			Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_piece);

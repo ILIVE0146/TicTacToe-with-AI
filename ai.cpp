@@ -1,6 +1,6 @@
 #include "ai.hpp"
 #include "DEFINITIONS.hpp"
-
+#include <iostream>
 using namespace std;
 
 namespace GameEngine

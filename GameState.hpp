@@ -4,7 +4,7 @@
 #include "State.hpp"
 #include "Game.hpp"
 
-#include "ai.hpp"
+#include "unbeatableAi.hpp"
 
 namespace GameEngine
 {
@@ -36,12 +36,13 @@ namespace GameEngine
 		sf::Sprite _gridPieces[3][3];
 		sf::Sprite _homeButton;
 		sf::Sprite _retryButton;
+		int call_count;
 		int _gridArray[3][3];
 
 		int turn;
 		int gameState;
 		int temp;
-		AI *ai;
+		thinker *ai;
 		sf::Clock _clock;
 
 		sf::Text turnText;

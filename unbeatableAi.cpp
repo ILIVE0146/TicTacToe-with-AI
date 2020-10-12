@@ -2,6 +2,7 @@
 #include "DEFINITIONS.hpp"
 #include <algorithm>
 #include <iostream>
+#include<random>
 using namespace std;
 namespace GameEngine{
     thinker::thinker(int playerPiece,GameDataRef data){
@@ -69,6 +70,41 @@ namespace GameEngine{
         (*gridPieces)[row][col].setColor(sf::Color(255, 255, 255, 255));
         *gameState = STATE_PLAYING;
     }
+
+    void thinker::randFirstMove(int(*gridArray)[3][3], sf::Sprite (*gridPieces)[3][3] , int *gameState)
+    {
+        std::random_device r;
+        std::seed_seq seed{r(), r(), r(), r(), r(), r()};
+        std::mt19937 eng{seed};
+        std::uniform_int_distribution<> dist(0,2);
+        int board[3][3];
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                board[i][j] = (*gridArray)[i][j];
+            }
+        }
+        
+        int row=0,col=0;
+        row=dist(eng);
+        col=dist(eng);
+        //row=rand()%3;
+        //col=rand()%3;
+        while(board[row][col]!=Empty_piece_number){
+            row=dist(eng);
+            col=dist(eng);
+            //row=rand()%3;
+            //col=rand()%3;
+        
+        }
+        //cout<<"The value of the best Move is : "<<bestVal<<endl;
+        (*gridArray)[row][col] = AI_piece;
+        (*gridPieces)[row][col].setTexture(this->_data->assets.GetTexture("O Piece"));
+        (*gridPieces)[row][col].setColor(sf::Color(255, 255, 255, 255));
+        *gameState = STATE_PLAYING;
+    }
+
     int thinker::minimax(int board[3][3], int depth, bool isMax)
     {
         int score = evaluate(board);

@@ -5,7 +5,7 @@
 #include "MainMenuState.hpp"
 #include "DEFINITIONS.hpp"
 #include "PauseState.hpp"
-
+#include "unbeatableAi.hpp"
 
 namespace GameEngine
 {
@@ -26,11 +26,7 @@ namespace GameEngine
 		this->turnText.setScale(2.5,2.5);
 		
 		
-		
-		
-		
-		
-		this->ai = new AI(turn, this->_data);
+		this->ai = new thinker(turn, this->_data);
 
 
 		_pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
@@ -80,6 +76,8 @@ namespace GameEngine
 					}
 					else if(this->_data->input.IsSpriteClicked(this->_retryButton,sf::Mouse::Left,this->_data->window)){
 						this->_data->machine.AddState(StateRef(new GameState(_data)),true);
+						call_count=0;
+
 					}
 			}
 		}
@@ -210,6 +208,7 @@ namespace GameEngine
 
 	void GameState::CheckHasPlayerWon(int player)
 	{
+		//static unsigned int call_count=0;
 		Check3PiecesForMatch(0, 0, 1, 0, 2, 0, player);
 		Check3PiecesForMatch(0, 1, 1, 1, 2, 1, player);
 		Check3PiecesForMatch(0, 2, 1, 2, 2, 2, player);
@@ -223,8 +222,13 @@ namespace GameEngine
 		{
 			gameState = State_AI_playing;
 
-			ai->PlacePiece(&_gridArray, &_gridPieces, &gameState);
+			if(call_count==0){
+				ai->randFirstMove(&_gridArray, &_gridPieces, &gameState);
+			}
+			else
+				ai->checkForOptimalSolutionToPlace(&_gridArray, &_gridPieces, &gameState);
 
+			
 			Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_piece);
 			Check3PiecesForMatch(0, 1, 1, 1, 2, 1, AI_piece);
 			Check3PiecesForMatch(0, 2, 1, 2, 2, 2, AI_piece);
@@ -262,6 +266,7 @@ namespace GameEngine
 			this->_clock.restart( );
 		}
 
+		call_count++;
 	}
 
 	void GameState::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck)
