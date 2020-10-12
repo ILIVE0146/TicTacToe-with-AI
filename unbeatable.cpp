@@ -1,40 +1,55 @@
+#include <iostream>
+
 #include <sstream>
 #include "unbeatable.hpp"
-#include "DEFINITIONS.hpp"
-
-#include "pauseState.hpp"
 #include "MainMenuState.hpp"
-namespace GameEngine{
-	unbeatable::unbeatable(GameDataRef data) : _data(data){ }
-	void unbeatable::Init(){
-		
+#include "DEFINITIONS.hpp"
+#include "PauseState.hpp"
+#include "unbeatableAi.hpp"
+
+namespace GameEngine
+{
+	unbeatable::unbeatable(GameDataRef data) : _data(data)
+	{
+
+	}
+
+	void unbeatable::Init()
+	{
+		gameState = STATE_PLAYING;
+		turn = PLAYER_PIECE;
 		this->_retryButton.setTexture(this->_data->assets.GetTexture("Retry Button"));
 		this->_homeButton.setTexture(this->_data->assets.GetTexture("Home Button"));
-
 		this->_retryButton.setPosition((this->_data->window.getSize().x / 2) - (this->_retryButton.getLocalBounds().width / 2), (this->_data->window.getSize().y / 3) - (this->_retryButton.getLocalBounds().height / 2));
 		this->_homeButton.setPosition((this->_data->window.getSize().x / 2) - (this->_homeButton.getLocalBounds().width / 2), (this->_data->window.getSize().y / 3 * 2) - (this->_homeButton.getLocalBounds().height / 2));
-		/*
-			For loading data
-		*/
-        gamestate = STATE_PLAYING;
-        turn = PLAYER_PIECE;
 		this->turnText.setFont(this->_data->assets.GetFont("Felt"));
-		this->turnText.setString("'s turn");
 		this->turnText.setScale(2.5,2.5);
-        this->_data->assets.LoadTexture("Pause Button",PAUSE_BUTTON);
-        _pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
-        _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width,_pauseButton.getPosition().y);
-		gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
-		gridSprite.setPosition((SCREEN_WIDTH/2) - (gridSprite.getGlobalBounds().width/2),(SCREEN_HEIGHT/2) - (gridSprite.getGlobalBounds().height/2));
-		this->showCurrentPlayer.setScale(0.5,0.5);
+		
+		
+		this->ai = new thinker(turn, this->_data);
+
+		
+
+		_pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
+		_gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
+
+		_pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
+		_gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
+	
 		InitGridPieces();
-		for(int x = 0; x< 3; x++){
-			for(int y=0; y<3;y++){
-				gridArray[x][y] = Empty_piece_number;
+
+		for (int x = 0; x < 3; x++)
+		{
+			for (int y = 0; y < 3; y++)
+			{
+				_gridArray[x][y] = Empty_piece_number;
 			}
 		}
+	
+		
 	}
-	void unbeatable::HandleInput()
+
+	void unbeatable::HandleInput() 
 	{
 		sf::Event event;
 
@@ -44,188 +59,237 @@ namespace GameEngine{
 			{
 				this->_data->window.close();
 			}
-            
-			if(gamestate != STATE_PLAYING){
-					if(this->_data->input.IsSpriteClicked(this->_homeButton,sf::Mouse::Left,this->_data->window)){
+			if(gameState == STATE_PLAYING)
+			{
+				if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
+				{
+					// Switch To Game State
+					this->_data->machine.AddState(StateRef(new PauseState(_data)), false);
+				}
+				else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
+				{
+					
+					if (STATE_PLAYING == gameState)
+					{
+						this->CheckAndPlacePiece();
+					}
+				}	
+			}else if(gameState != STATE_PLAYING && gameState != state_delay){
+				if(this->_data->input.IsSpriteClicked(this->_homeButton,sf::Mouse::Left,this->_data->window)){
 						this->_data->machine.AddState(StateRef(new MainMenuState(_data)),true);
 					}
 					else if(this->_data->input.IsSpriteClicked(this->_retryButton,sf::Mouse::Left,this->_data->window)){
 						this->_data->machine.AddState(StateRef(new unbeatable(_data)),true);
 					}
-			}else{
-				if(this->_data->input.IsSpriteClicked(this->_pauseButton,sf::Mouse::Left,this->_data->window)){
-                	this->_data->machine.AddState(StateRef(new PauseState(_data)),false);
-            	}
-				else if(this->_data->input.IsSpriteClicked(this->gridSprite,sf::Mouse::Left,this->_data->window)){
-					if(STATE_PLAYING == gamestate)
-					{
-						this->checkAndPlacePiece();
-					}
-				}
 			}
 		}
 	}
-	void unbeatable::checkAndPlacePiece(){
-		sf::Vector2i touchPoint = this->_data->input.GetMousePosition(this->_data->window);
-		sf::FloatRect gridSize = gridSprite.getGlobalBounds();
-		sf::Vector2f gapOutSideOfGrid = sf::Vector2f((SCREEN_WIDTH - gridSize.width)/2,(SCREEN_HEIGHT - gridSize.height) / 2 );
-		sf::Vector2f gridLocalTouchPos = sf::Vector2f(touchPoint.x - gapOutSideOfGrid.x,touchPoint.y - gapOutSideOfGrid.y);
-		sf::Vector2f gridSectionSize = sf::Vector2f(gridSize.width/3,gridSize.height/3);
-		int column , row;
-		if(gridLocalTouchPos.x < gridSectionSize.x){
-			column = 1;
-		}else if(gridLocalTouchPos.x < gridSectionSize.x * 2){
-			column = 2;
-		}else if(gridLocalTouchPos.x < gridSize.width){
-			column = 3;
-		}
-		if(gridLocalTouchPos.y < gridSectionSize.y){
-			row = 1;
-		}else if(gridLocalTouchPos.y < gridSectionSize.y * 2){
-			row = 2;
-		}else if(gridLocalTouchPos.y < gridSize.height ){
-			row = 3;
-		}
-		if( gridArray[column - 1][row -1] == Empty_piece_number){
-			gridArray[column - 1][row - 1] = turn;
-			if(PLAYER_PIECE == turn){
-				gridPieces[column -1][row-1].setTexture(this->_data->assets.GetTexture("X Piece"));
-				this->checkPlayerHasWon(turn);
-				turn = AI_piece;
-			}else if(AI_piece == turn){
-				gridPieces[column -1][row-1].setTexture(this->_data->assets.GetTexture("O Piece"));
-				this->checkPlayerHasWon(turn);
-				turn = PLAYER_PIECE;	
-			}
-			gridPieces[column - 1][row-1].setColor(sf::Color(255,255,255,255));
-		}
-	}
+
 	void unbeatable::Update(float dt)
 	{
-		if(gamestate == state_delay){
+		if(gameState == state_delay){
 			
-			if(timer.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER){
-				gamestate = temp;
+			if(_clock.getElapsedTime().asSeconds() > TIME_BEFORE_SHOWING_GAME_OVER){
+				gameState = temp;
 			}
 			
 		}
-		if(gamestate == STATE_PLAYING){
-			if(turn == PLAYER_PIECE){
-				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
-				this->showCurrentPlayer.setPosition(25,800);
-				this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
-			}else{
-				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("O Piece"));
-				this->showCurrentPlayer.setPosition(300,800);
-				this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
+		if(gameState != state_delay && gameState != STATE_PLAYING){
+			this->turnText.setPosition(225, 90);
+			if(gameState == State_won){
+				this->turnText.setString("YOU WON");
+				this->turnText.setPosition(175,90);
 			}
-		}else if(gamestate != state_delay){
-			if(gamestate == State_won){
-				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
-			}else if(gamestate == State_lose){
-				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("O Piece"));
-			}else{
-				this->showCurrentPlayer.setColor(sf::Color(0,0,0,0));
-			}
-			if(gamestate != State_Draw){
-				this->turnText.setString(" - WON");
+			else if(gameState == State_lose ){
+				this->turnText.setString("YOU LOST");
+				this->turnText.setPosition(175,90);
 			}else{
 				this->turnText.setString("DRAW");
 			}
-			this->showCurrentPlayer.setPosition(150,100);
-			this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75, this->showCurrentPlayer.getPosition().y - 10);
+			
 		}
 	}
+
 	void unbeatable::Draw(float dt)
 	{
-		if(gamestate != STATE_PLAYING && gamestate != state_delay)
-		{
-			if(gamestate == State_won){
-				this->_data->window.clear(sf::Color(250,181,127));
-			}
-			else if(gamestate == State_lose)
-			{
-				this->_data->window.clear(sf::Color(127,197,250));
-			}
-			else{
-				this->_data->window.clear(sf::Color( 33, 176, 164));
-			}
+		this->_data->window.clear(sf::Color(250,181,127));
+		if(gameState != STATE_PLAYING && gameState != state_delay){
 			this->_data->window.draw(this->_retryButton);
 			this->_data->window.draw(this->_homeButton);
-		}else{
-			if(turn == PLAYER_PIECE)
+			this->_data->window.draw(this->turnText);
+		}
+		else if(gameState == STATE_PLAYING || gameState == state_delay){
+
+			this->_data->window.draw( this->_pauseButton );
+
+			this->_data->window.draw( this->_gridSprite );
+
+			for (int x = 0; x < 3; x++)
 			{
-				this->_data->window.clear(sf::Color(250,181,127));
-			}
-			else{
-				this->_data->window.clear(sf::Color(127,197,250));
-			}
-			this->_data->window.draw(this->_pauseButton);
-        	this->_data->window.draw(this->gridSprite);
-			for(int x =0;x<3;x++){
-				for(int y=0;y<3;y++){
-					this->_data->window.draw(this->gridPieces[x][y]);
+				for (int y = 0; y < 3; y++)
+				{
+					this->_data->window.draw(this->_gridPieces[x][y]);
 				}
 			}
 		}
-		this->_data->window.draw(this->showCurrentPlayer);
-		this->_data->window.draw(this->turnText);
-		
+
 		this->_data->window.display();
 	}
-	void unbeatable::InitGridPieces(){
+
+	void unbeatable::InitGridPieces()
+	{
 		sf::Vector2u tempSpriteSize = this->_data->assets.GetTexture("X Piece").getSize();
-		for(int x =0;x<3;x++){
-			for(int y=0;y<3;y++){
-				gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
-				gridPieces[x][y].setPosition(gridSprite.getPosition().x+(tempSpriteSize.x * x)-7,gridSprite.getPosition().y+(tempSpriteSize.y * y) - 7);
-				gridPieces[x][y].setColor(sf::Color(255,255,255,0));
+
+		for (int x = 0; x < 3; x++)
+		{
+			for (int y = 0; y < 3; y++)
+			{
+				_gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
+				_gridPieces[x][y].setPosition(_gridSprite.getPosition().x + (tempSpriteSize.x * x) - 7, _gridSprite.getPosition().y + (tempSpriteSize.y * y) - 7);
+				_gridPieces[x][y].setColor(sf::Color(255, 255, 255, 0));
 			}
 		}
 	}
-	void unbeatable::checkPlayerHasWon(int player){
-		Check3PiecesForMatch(0,0,1,0,2,0,player);
-		Check3PiecesForMatch(0,1,1,1,2,1,player);
-		Check3PiecesForMatch(0,2,1,2,2,2,player);
-		Check3PiecesForMatch(0,0,0,1,0,2,player);
-		Check3PiecesForMatch(1,0,1,1,1,2,player);
-		Check3PiecesForMatch(2,0,2,1,2,2,player);
-		Check3PiecesForMatch(0,0,1,1,2,2,player);
-		Check3PiecesForMatch(0,2,1,1,2,0,player);
+
+	void unbeatable::CheckAndPlacePiece()
+	{
+		sf::Vector2i touchPoint = this->_data->input.GetMousePosition(this->_data->window);
+		sf::FloatRect gridSize = _gridSprite.getGlobalBounds();
+		sf::Vector2f gapOutsideOfGrid = sf::Vector2f((SCREEN_WIDTH - gridSize.width) / 2, (SCREEN_HEIGHT - gridSize.height) / 2);
+
+		sf::Vector2f gridLocalTouchPos = sf::Vector2f(touchPoint.x - gapOutsideOfGrid.x, touchPoint.y - gapOutsideOfGrid.y);
+
+		//std::cout << gridLocalTouchPos.x << ", " << gridLocalTouchPos.y << std::endl;
+
+		sf::Vector2f gridSectionSize = sf::Vector2f(gridSize.width / 3, gridSize.height / 3);
+
+		int column, row;
+
+		// Check which column the user has clicked
+		if (gridLocalTouchPos.x < gridSectionSize.x) // First Column
+		{
+			column = 1;
+		}
+		else if (gridLocalTouchPos.x < gridSectionSize.x * 2) // Second Column
+		{
+			column = 2;
+		}
+		else if (gridLocalTouchPos.x < gridSize.width) // Third Column
+		{
+			column = 3;
+		}
+
+		// Check which row the user has clicked
+		if (gridLocalTouchPos.y < gridSectionSize.y) // First Row
+		{
+			row = 1;
+		}
+		else if (gridLocalTouchPos.y < gridSectionSize.y * 2) // Second Row
+		{
+			row = 2;
+		}
+		else if (gridLocalTouchPos.y < gridSize.height) // Third Row
+		{
+			row = 3;
+		}
+
+		if (_gridArray[column - 1][row - 1] == Empty_piece_number)
+		{
+			_gridArray[column - 1][row - 1] = turn;
+
+			if (PLAYER_PIECE == turn)
+			{
+				_gridPieces[column - 1][row - 1].setTexture(this->_data->assets.GetTexture("X Piece"));
+
+				this->CheckHasPlayerWon(turn);
+			}
+
+			_gridPieces[column - 1][row - 1].setColor(sf::Color(255, 255, 255, 255));
+		}
+	}
+
+	void unbeatable::CheckHasPlayerWon(int player)
+	{
+		Check3PiecesForMatch(0, 0, 1, 0, 2, 0, player);
+		Check3PiecesForMatch(0, 1, 1, 1, 2, 1, player);
+		Check3PiecesForMatch(0, 2, 1, 2, 2, 2, player);
+		Check3PiecesForMatch(0, 0, 0, 1, 0, 2, player);
+		Check3PiecesForMatch(1, 0, 1, 1, 1, 2, player);
+		Check3PiecesForMatch(2, 0, 2, 1, 2, 2, player);
+		Check3PiecesForMatch(0, 0, 1, 1, 2, 2, player);
+		Check3PiecesForMatch(0, 2, 1, 1, 2, 0, player);
+
+		if (State_won != gameState)
+		{
+			gameState = State_AI_playing;
+			int temp[2];
+		
+			ai->checkForOptimalSolutionToPlace(&_gridArray, _gridPieces, &gameState);
+			
+			Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_piece);
+			Check3PiecesForMatch(0, 1, 1, 1, 2, 1, AI_piece);
+			Check3PiecesForMatch(0, 2, 1, 2, 2, 2, AI_piece);
+			Check3PiecesForMatch(0, 0, 0, 1, 0, 2, AI_piece);
+			Check3PiecesForMatch(1, 0, 1, 1, 1, 2, AI_piece);
+			Check3PiecesForMatch(2, 0, 2, 1, 2, 2, AI_piece);
+			Check3PiecesForMatch(0, 0, 1, 1, 2, 2, AI_piece);
+			Check3PiecesForMatch(0, 2, 1, 1, 2, 0, AI_piece);
+		}
+
 		int emptyNum = 9;
-		for(int x = 0 ; x<3 ; x++){
-			for(int y=0;y<3;y++){
-				if(Empty_piece_number != gridArray[x][y]){
+
+		for (int x = 0; x < 3; x++)
+		{
+			for (int y = 0; y < 3; y++)
+			{
+				if (Empty_piece_number != _gridArray[x][y])
+				{
 					emptyNum--;
 				}
 			}
 		}
-		if((0 == emptyNum) && (State_won != gamestate)&& (State_lose != gamestate)){
-			gamestate = state_delay;
-			this->temp = State_Draw;
+
+		// check if the game is a draw
+		if (0 == emptyNum && (State_won != gameState) && (State_lose != gameState))
+		{
+			gameState = state_delay;
+			temp=State_Draw;
 		}
-		if (gamestate == state_delay)
+
+		// check if the game is over
+		if (gameState == state_delay)
 		{
 			// show game over
-			this->timer.restart( );
+			this->_clock.restart( );
 		}
+
 	}
-	void unbeatable::Check3PiecesForMatch(int x1, int y1 , int x2, int y2 ,int x3, int y3 ,int pieceToCheck){
-		if( pieceToCheck == gridArray[x1][y1] && pieceToCheck == gridArray[x2][y2] && pieceToCheck == gridArray[x3][y3]){
+
+	void unbeatable::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck)
+	{
+		if (pieceToCheck == _gridArray[x1][y1] && pieceToCheck == _gridArray[x2][y2] && pieceToCheck == _gridArray[x3][y3])
+		{
 			std::string winningPieceStr;
-			if( O_piece_number == pieceToCheck){
-				winningPieceStr = "O Win";
-			}else{
-				winningPieceStr = "X Win";
+
+			if (O_piece_number == pieceToCheck)
+			{
+				winningPieceStr = "O Winning Piece";
 			}
-			gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-			gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-			gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+			else
+			{
+				winningPieceStr = "X Winning Piece";
+			}
+
+			_gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+			_gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+			_gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+
+
 			if(PLAYER_PIECE == pieceToCheck){
-				gamestate = state_delay;
+				gameState = state_delay;
 				this->temp = State_won;
 			}else{
-				gamestate = state_delay;
+				gameState = state_delay;
 				this->temp = State_lose;
 			}
 		}
