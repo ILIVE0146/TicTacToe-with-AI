@@ -29,7 +29,7 @@ namespace GameEngine{
                 board[i][j] = (*gridArray)[i][j];
             }
         }
-        int bestVal = -1000, row=0, col=0;
+        int bestVal = -1000, row=-1, col=-1;
         // Traverse all cells, evaluate minimax function for
         // all empty cells. And return the cell with optimal
         // value.
@@ -64,10 +64,12 @@ namespace GameEngine{
         }
 
         //cout<<"The value of the best Move is : "<<bestVal<<endl;
-        (*gridArray)[row][col] = AI_piece;
-        (*gridPieces)[row][col].setTexture(this->_data->assets.GetTexture("O Piece"));
-        (*gridPieces)[row][col].setColor(sf::Color(255, 255, 255, 255));
-        *gameState = STATE_PLAYING;
+        if(row != -1 || col != -1){
+            (*gridArray)[row][col] = AI_piece;
+            (*gridPieces)[row][col].setTexture(this->_data->assets.GetTexture("O Piece"));
+            (*gridPieces)[row][col].setColor(sf::Color(255, 255, 255, 255));
+            *gameState = STATE_PLAYING;
+        }
     }
     int thinker::minimax(int board[3][3], int depth, bool isMax)
     {
