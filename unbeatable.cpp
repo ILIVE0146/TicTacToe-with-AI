@@ -113,6 +113,13 @@ namespace GameEngine
 	void unbeatable::Draw(float dt)
 	{
 		this->_data->window.clear(sf::Color(250,181,127));
+		if(gameState == State_won){
+			this->_data->window.clear(sf::Color(250,181,127));
+		}else if(gameState == State_Draw){
+			this->_data->window.clear(sf::Color( 33, 176, 164));
+		}else if(gameState == State_lose){
+			this->_data->window.clear(sf::Color(127,197,250));
+		}
 		if(gameState != STATE_PLAYING && gameState != state_delay){
 			this->_data->window.draw(this->_retryButton);
 			this->_data->window.draw(this->_homeButton);
