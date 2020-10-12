@@ -28,6 +28,7 @@ public:
     bool check_image_exist()
     {
         bool missing=false;
+      
         for (unsigned int i = 0; i < fileName.size(); i++)
         {
             std::ifstream infile(fileName[i]);
@@ -39,9 +40,10 @@ public:
                 cout << fileName[i] << endl;
             }
         }
-        if(missing)
+        if(missing){
             //false for missing files
             return false;
+        }
         else{
             //true for no files are missing
             return true;
