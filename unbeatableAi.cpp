@@ -18,7 +18,7 @@ namespace GameEngine{
             this->minPlayer = playerPiece;
 		}
     }
-    void thinker::checkForOptimalSolutionToPlace(int(*gridArray)[3][3], sf::Sprite gridPieces[3][3] , int *gameState){
+    void thinker::checkForOptimalSolutionToPlace(int(*gridArray)[3][3], sf::Sprite (*gridPieces)[3][3] , int *gameState){
         
         int board[3][3];
         for(int i=0;i<3;i++){
@@ -46,8 +46,8 @@ namespace GameEngine{
         }
         //here now best move is row,col
         (*gridArray)[row][col] = AI_piece;
-        gridPieces[row][col].setTexture(this->_data->assets.GetTexture("O Piece"));
-        gridPieces[row][col].setColor(sf::Color(255, 255, 255, 255));
+        (*gridPieces)[row][col].setTexture(this->_data->assets.GetTexture("O Piece"));
+        (*gridPieces)[row][col].setColor(sf::Color(255, 255, 255, 255));
         *gameState = STATE_PLAYING;
     }
     int thinker::minMax(int board[3][3], int depth, bool isMax){

@@ -21,27 +21,23 @@ namespace GameEngine{
     //For pvp button
         this->pvpButton.setTexture(this->_data->assets.GetTexture("Play Button"));
         this->pvpText.setFont(this->_data->assets.GetFont("Felt"));
-        this->pvpButton.setScale(0.1,0.1);
         this->pvpText.setString("      PVP      ");
         this->pvpButton.setPosition(200,300);
         this->pvpText.setPosition(this->pvpButton.getPosition().x + 45,this->pvpButton.getPosition().y + 5);
         //For Easy AI
         this->easyAI.setTexture(this->_data->assets.GetTexture("Play Button"));
         this->easyAI_text.setFont(this->_data->assets.GetFont("Felt"));
-        this->easyAI.setScale(0.1,0.1);
         this->easyAI_text.setString("Easy AI");
         this->easyAI.setPosition(200,450);
         this->easyAI_text.setPosition(this->easyAI.getPosition().x + 70 ,this->easyAI.getPosition().y + 5);
         //for unbeatable AI
         this->unbeatable_mode.setTexture(this->_data->assets.GetTexture("Play Button"));
         this->unbeatable_mode_text.setFont(this->_data->assets.GetFont("Felt"));
-        this->unbeatable_mode.setScale(0.1,0.1);
         this->unbeatable_mode_text.setString("Unbeatable AI");
         this->unbeatable_mode.setPosition(200,600);
         this->unbeatable_mode_text.setPosition(this->unbeatable_mode.getPosition().x + 20,this->unbeatable_mode.getPosition().y + 5);
         //FOr Back button
         this->back_button.setTexture(this->_data->assets.GetTexture("Play Button"));
-        this->back_button.setScale(0.1,0.1);
         this->back_button.setPosition(350,825);
         this->back_TXT.setFont(this->_data->assets.GetFont("Felt"));
         this->back_TXT.setString("BACK");
@@ -58,28 +54,28 @@ namespace GameEngine{
 				this->_data->window.close();
 			}
             if(this->unbeatable_mode.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
-				this->unbeatable_mode.setTexture(this->_data->assets.GetTexture("play botton alternative"));
+				this->unbeatable_mode.setScale(1.25,1.25);
 			}
 			else{
-				this->unbeatable_mode.setTexture(this->_data->assets.GetTexture("Play Button"));
+				this->unbeatable_mode.setScale(1,1);
 			}
             if(this->easyAI.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
-				this->easyAI.setTexture(this->_data->assets.GetTexture("play botton alternative"));
+				this->easyAI.setScale(1.25,1.25);
 			}
 			else{
-				this->easyAI.setTexture(this->_data->assets.GetTexture("Play Button"));
+				this->easyAI.setScale(1,1);
 			}
             if(this->pvpButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
-				this->pvpButton.setTexture(this->_data->assets.GetTexture("play botton alternative"));
+				this->pvpButton.setScale(1.25,1.25);
 			}
 			else{
-				this->pvpButton.setTexture(this->_data->assets.GetTexture("Play Button"));
+				this->pvpButton.setScale(1,1);
 			}
             if(this->back_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
-				this->back_button.setTexture(this->_data->assets.GetTexture("play botton alternative"));
+				this->back_button.setScale(1.25,1.25);
 			}
 			else{
-				this->back_button.setTexture(this->_data->assets.GetTexture("Play Button"));
+				this->back_button.setScale(1,1);
 			}
             if (this->_data->input.IsSpriteClicked(this->back_button, sf::Mouse::Left, this->_data->window))
 			{

@@ -1,14 +1,11 @@
 #pragma once
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 900
-#define MAIN_MENU_TITLE_FILEPATH "Resources/res/title.png"
-#define MAIN_MENU_PLAY_BUTTON "Resources/res/ButtonOrange.png"
 #define MAIN_MENU_PLAY_BUTTON_OUTER "Resources/res/Play Button Outer.png"
 #define FELT_FRONT "Resources/fonts/Marker Felt.ttf"
-#define PLAY_BTN_ALTER "Resources/res/butttonSandstone.png"
 #define X_WINNING_PIECE_FILEPATH "Resources/res/X Win.png"
 #define O_WINNING_PIECE_FILEPATH "Resources/res/O Win.png"
-#define PLAY_BUTTON "Resources/res/ButtonOrange.png"
+#define PLAY_BUTTON "Resources/res/button.png"
 #define PAUSE_BUTTON "Resources/res/Pause Button.png"
 #define X_PIECE_FILEPATH "Resources/res/X.png"
 #define O_PIECE_FILEPATH "Resources/res/O.png"

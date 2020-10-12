@@ -224,7 +224,7 @@ namespace GameEngine
 			gameState = State_AI_playing;
 			int temp[2];
 		
-			ai->checkForOptimalSolutionToPlace(&_gridArray, _gridPieces, &gameState);
+			ai->checkForOptimalSolutionToPlace(&_gridArray, &_gridPieces, &gameState);
 			
 			Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_piece);
 			Check3PiecesForMatch(0, 1, 1, 1, 2, 1, AI_piece);

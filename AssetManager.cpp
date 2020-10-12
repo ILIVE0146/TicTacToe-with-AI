@@ -9,6 +9,7 @@ namespace GameEngine
 
 		if (tex.loadFromFile(fileName))
 		{
+			tex.setSmooth(true);
 			this->_textures[name] = tex;
 		}
 	}

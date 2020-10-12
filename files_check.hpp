@@ -10,11 +10,8 @@ public:
     vector<string> fileName;
     imageCheck()
     {
-        fileName.push_back(MAIN_MENU_TITLE_FILEPATH);
-        fileName.push_back(MAIN_MENU_PLAY_BUTTON);
         fileName.push_back(MAIN_MENU_PLAY_BUTTON_OUTER);
         fileName.push_back(FELT_FRONT);
-        fileName.push_back(PLAY_BTN_ALTER);
         fileName.push_back(X_WINNING_PIECE_FILEPATH);
         fileName.push_back(O_WINNING_PIECE_FILEPATH);
         fileName.push_back(PLAY_BUTTON);
@@ -24,6 +21,8 @@ public:
         fileName.push_back(resume_button);
         fileName.push_back(Home_button);
         fileName.push_back(GRID_SPRITE_FILEPATH);
+        fileName.push_back("Resources/res/Retry Button.png");
+        fileName.push_back("Resources/res/Home Button.png");
     }
 
     bool check_image_exist()
