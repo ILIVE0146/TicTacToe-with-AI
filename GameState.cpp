@@ -94,7 +94,7 @@ namespace GameEngine
 			}
 			
 		}
-		if(gameState != state_delay && gameState != STATE_PLAYING){
+		if(gameState != state_delay && gameState != STATE_PLAYING && gameState != State_AI_playing){
 			this->turnText.setPosition(225, 90);
 			if(gameState == State_won){
 				this->turnText.setString("YOU WON");
@@ -113,7 +113,7 @@ namespace GameEngine
 	void GameState::Draw(float dt)
 	{
 		this->_data->window.clear(sf::Color(250,181,127));
-		if(gameState != STATE_PLAYING && gameState != state_delay){
+		if(gameState != STATE_PLAYING && gameState != state_delay && gameState != State_AI_playing){
 			this->_data->window.draw(this->_retryButton);
 			this->_data->window.draw(this->_homeButton);
 			this->_data->window.draw(this->turnText);
@@ -219,7 +219,7 @@ namespace GameEngine
 		Check3PiecesForMatch(0, 0, 1, 1, 2, 2, player);
 		Check3PiecesForMatch(0, 2, 1, 1, 2, 0, player);
 
-		if (State_won != gameState)
+		if (State_won != gameState || gameState!= state_delay)
 		{
 			gameState = State_AI_playing;
 
@@ -249,7 +249,7 @@ namespace GameEngine
 		}
 
 		// check if the game is a draw
-		if (0 == emptyNum && (State_won != gameState) && (State_lose != gameState))
+		if (0 == emptyNum && (State_won != gameState || gameState != state_delay) && (State_lose != gameState|| gameState != state_delay))
 		{
 			gameState = state_delay;
 			temp=State_Draw;
