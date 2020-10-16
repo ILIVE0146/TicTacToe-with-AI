@@ -16,6 +16,7 @@ namespace GameEngine
 
 	void GameState::Init()
 	{
+		call_count=0;
 		gameState = STATE_PLAYING;
 		turn = PLAYER_PIECE;
 		this->_retryButton.setTexture(this->_data->assets.GetTexture("Retry Button"));
@@ -76,8 +77,6 @@ namespace GameEngine
 					}
 					else if(this->_data->input.IsSpriteClicked(this->_retryButton,sf::Mouse::Left,this->_data->window)){
 						this->_data->machine.AddState(StateRef(new GameState(_data)),true);
-						call_count=0;
-
 					}
 			}
 		}

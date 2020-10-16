@@ -10,6 +10,7 @@ int main()
 	imageCheck ch;
 	if(ch.check_image_exist() == false){
 		sf::RenderWindow ErrorWindow(sf::VideoMode(300,100), "ERROR,Files not Found!", sf::Style::None);
+    ErrorWindow.requestFocus();
 		const unsigned char data[1646] =
 {
 //    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
@@ -121,8 +122,8 @@ int main()
 		texture.loadFromMemory(data, sizeof(data));
 		sf::Sprite error;
 		error.setTexture(texture);
-		sf::Sprite okBox;
 		ErrorWindow.setFramerateLimit(60);
+    sf::IntRect box(220,40,100,40);
 		while(ErrorWindow.isOpen()){
 			sf::Event event;
 			while (ErrorWindow.pollEvent(event))
@@ -132,7 +133,6 @@ int main()
 					return 0;
 				}
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-					sf::IntRect box(220,40,100,40);
 					if(box.contains(sf::Mouse::getPosition(ErrorWindow))){
 						ErrorWindow.close();
 						return 0;
