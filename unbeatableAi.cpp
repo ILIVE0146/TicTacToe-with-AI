@@ -1,7 +1,6 @@
 #include "unbeatableAi.hpp"
 #include "DEFINITIONS.hpp"
 #include <algorithm>
-#include<limits>
 #include <iostream>
 using namespace std;
 namespace GameEngine{
@@ -30,7 +29,7 @@ namespace GameEngine{
                 board[i][j] = (*gridArray)[i][j];
             }
         }
-        int bestVal = numeric_limits<int>::min(), row=-1, col=-1;
+        int bestVal = -1000, row=-1, col=-1;
         // Traverse all cells, evaluate minimax function for
         // all empty cells. And return the cell with optimal
         // value.
@@ -94,7 +93,7 @@ namespace GameEngine{
         // If this maximizer's move
         if (isMax)
         {
-            int best = numeric_limits<int>::min();
+            int best = -1000;
 
             // Traverse all cells
             for (int i = 0; i < 3; i++)
@@ -122,7 +121,7 @@ namespace GameEngine{
         // If this minimizer's move
         else
         {
-            int best = numeric_limits<int>::max();
+            int best = 1000;
 
             // Traverse all cells
             for (int i = 0; i < 3; i++)
