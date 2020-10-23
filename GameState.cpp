@@ -219,7 +219,7 @@ namespace GameEngine
 		Check3PiecesForMatch(0, 0, 1, 1, 2, 2, player);
 		Check3PiecesForMatch(0, 2, 1, 1, 2, 0, player);
 
-		if (State_won != gameState || gameState!= state_delay)
+		if ( gameState!= state_delay)
 		{
 			gameState = State_AI_playing;
 
