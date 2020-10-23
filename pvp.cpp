@@ -45,7 +45,7 @@ namespace GameEngine{
 				this->_data->window.close();
 			}
             
-			if(gamestate != STATE_PLAYING || gamestate != State_AI_playing){
+			if(gamestate != STATE_PLAYING){
 					if(this->_data->input.IsSpriteClicked(this->_homeButton,sf::Mouse::Left,this->_data->window)){
 						this->_data->machine.AddState(StateRef(new MainMenuState(_data)),true);
 					}
