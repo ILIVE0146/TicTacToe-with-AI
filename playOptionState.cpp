@@ -100,7 +100,11 @@ namespace GameEngine{
 	}
 	void PlayOptionState::Draw(float dt)
 	{
-		this->_data->window.clear(sf::Color(142,237,210));
+		if(this->_data->isdefaultTheme){
+			this->_data->window.clear(sf::Color(this->_data->themeDefault->getMainMenuR(),this->_data->themeDefault->getMainMenuG(),this->_data->themeDefault->getMainMenuB()));
+		}else{
+			this->_data->window.clear(sf::Color(this->_data->themeNew->getMainMenuR(),this->_data->themeNew->getMainMenuG(),this->_data->themeNew->getMainMenuB()));
+		}
         this->_data->window.draw(this->tytle);
         this->_data->window.draw(this->easyAI);
         this->_data->window.draw(this->easyAI_text);

@@ -6,6 +6,7 @@
 #include "StateMachine.hpp"
 #include "AssetManager.hpp"
 #include "InputManager.hpp"
+#include "rgba.hpp"
 
 namespace GameEngine
 {
@@ -15,6 +16,9 @@ namespace GameEngine
 		sf::RenderWindow window;
 		AssetManager assets;
 		InputManager input;
+		bool isdefaultTheme = true;
+		rgba *themeDefault;
+		rgba *themeNew;
 	};
 
 	typedef std::shared_ptr<GameData> GameDataRef;

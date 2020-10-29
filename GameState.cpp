@@ -26,10 +26,6 @@ namespace GameEngine
 		this->turnText.setScale(2.5,2.5);
 		
 		
-		
-		
-		
-		
 		this->ai = new AI(turn, this->_data);
 
 
@@ -94,13 +90,13 @@ namespace GameEngine
 			}
 			
 		}
-		if(gameState != state_delay && gameState != STATE_PLAYING && gameState != State_AI_playing){
+		if(gameState != STATE_PLAYING && gameState != State_AI_playing){
 			this->turnText.setPosition(225, 90);
-			if(gameState == State_won){
+			if(temp == State_won){
 				this->turnText.setString("YOU WON");
 				this->turnText.setPosition(175,90);
 			}
-			else if(gameState == State_lose ){
+			else if(temp == State_lose ){
 				this->turnText.setString("YOU LOST");
 				this->turnText.setPosition(175,90);
 			}else{
@@ -112,7 +108,11 @@ namespace GameEngine
 
 	void GameState::Draw(float dt)
 	{
-		this->_data->window.clear(sf::Color(250,181,127));
+		if(this->_data->isdefaultTheme){
+			this->_data->window.clear(sf::Color(this->_data->themeDefault->getXR(),this->_data->themeDefault->getXG(),this->_data->themeDefault->getXB()));
+		}else{
+			this->_data->window.clear(sf::Color(this->_data->themeNew->getXR(),this->_data->themeNew->getXG(),this->_data->themeNew->getXB()));
+		}
 		if(gameState != STATE_PLAYING && gameState != state_delay && gameState != State_AI_playing){
 			this->_data->window.draw(this->_retryButton);
 			this->_data->window.draw(this->_homeButton);
@@ -121,7 +121,7 @@ namespace GameEngine
 		else if(gameState == STATE_PLAYING || gameState == state_delay){
 
 			this->_data->window.draw( this->_pauseButton );
-
+			this->_data->window.draw(this->turnText);
 			this->_data->window.draw( this->_gridSprite );
 
 			for (int x = 0; x < 3; x++)

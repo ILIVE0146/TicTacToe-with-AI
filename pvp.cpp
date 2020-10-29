@@ -119,15 +119,15 @@ namespace GameEngine{
 				this->showCurrentPlayer.setPosition(300,800);
 				this->turnText.setPosition(this->showCurrentPlayer.getPosition().x + 75 ,this->showCurrentPlayer.getPosition().y - 10);
 			}
-		}else if(gamestate != state_delay){
-			if(gamestate == State_won){
+		}else if(gamestate == state_delay){
+			if(temp == State_won){
 				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("X Piece"));
-			}else if(gamestate == State_lose){
+			}else if(temp == State_lose){
 				this->showCurrentPlayer.setTexture(this->_data->assets.GetTexture("O Piece"));
 			}else{
 				this->showCurrentPlayer.setColor(sf::Color(0,0,0,0));
 			}
-			if(gamestate != State_Draw){
+			if(temp != State_Draw){
 				this->turnText.setString(" - WON");
 			}else{
 				this->turnText.setString("DRAW");
@@ -141,11 +141,19 @@ namespace GameEngine{
 		if(gamestate != STATE_PLAYING && gamestate != state_delay)
 		{
 			if(gamestate == State_won){
-				this->_data->window.clear(sf::Color(250,181,127));
+				if(this->_data->isdefaultTheme){
+					this->_data->window.clear(sf::Color(this->_data->themeDefault->getXR(),this->_data->themeDefault->getXG(),this->_data->themeDefault->getXB()));
+				}else{
+					this->_data->window.clear(sf::Color(this->_data->themeNew->getXR(),this->_data->themeNew->getXG(),this->_data->themeNew->getXB()));
+				}
 			}
 			else if(gamestate == State_lose)
 			{
-				this->_data->window.clear(sf::Color(127,197,250));
+				if(this->_data->isdefaultTheme){
+					this->_data->window.clear(sf::Color(this->_data->themeDefault->getOR(),this->_data->themeDefault->getOG(),this->_data->themeDefault->getOB()));
+				}else{
+					this->_data->window.clear(sf::Color(this->_data->themeNew->getOR(),this->_data->themeNew->getOG(),this->_data->themeNew->getOB()));
+				}
 			}
 			else{
 				this->_data->window.clear(sf::Color( 33, 176, 164));
@@ -155,10 +163,18 @@ namespace GameEngine{
 		}else{
 			if(turn == PLAYER_PIECE)
 			{
-				this->_data->window.clear(sf::Color(250,181,127));
+				if(this->_data->isdefaultTheme){
+					this->_data->window.clear(sf::Color(this->_data->themeDefault->getXR(),this->_data->themeDefault->getXG(),this->_data->themeDefault->getXB()));
+				}else{
+					this->_data->window.clear(sf::Color(this->_data->themeNew->getXR(),this->_data->themeNew->getXG(),this->_data->themeNew->getXB()));
+				}
 			}
 			else{
-				this->_data->window.clear(sf::Color(127,197,250));
+				if(this->_data->isdefaultTheme){
+					this->_data->window.clear(sf::Color(this->_data->themeDefault->getOR(),this->_data->themeDefault->getOG(),this->_data->themeDefault->getOB()));
+				}else{
+					this->_data->window.clear(sf::Color(this->_data->themeNew->getOR(),this->_data->themeNew->getOG(),this->_data->themeNew->getOB()));
+				}
 			}
 			this->_data->window.draw(this->_pauseButton);
         	this->_data->window.draw(this->gridSprite);
