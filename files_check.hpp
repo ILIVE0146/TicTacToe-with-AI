@@ -23,6 +23,7 @@ public:
         fileName.push_back(GRID_SPRITE_FILEPATH);
         fileName.push_back("Resources/res/Retry Button.png");
         fileName.push_back("Resources/res/Home Button.png");
+        fileName.push_back("Resources/fonts/ARIAL.TTF");
     }
 
     bool check_image_exist()

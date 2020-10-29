@@ -2,13 +2,16 @@
 #include "MainMenuState.hpp"
 #include "DEFINITIONS.hpp"
 #include "playOptionState.hpp"
-
+#include "options.hpp"
+#include "rgba.hpp"
 namespace GameEngine{
 	MainMenuState::MainMenuState(GameDataRef data) : _data(data){ }
 	void MainMenuState::Init(){
 		/*
 			For loading data
 		*/
+		this->_data->themeDefault = new rgba();
+		this->_data->themeNew = new rgba(true);
 		this->_data->assets.LoadTexture("Resume Button",resume_button);
 		this->_data->assets.LoadTexture("Pause Button", PAUSE_BUTTON);
 		this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
@@ -23,6 +26,7 @@ namespace GameEngine{
 		this->_data->assets.LoadTexture("X Win", X_WINNING_PIECE_FILEPATH);
 		this->_data->assets.LoadTexture("O Win",O_WINNING_PIECE_FILEPATH);
 		this->_data->assets.LoadFont("Felt",FELT_FRONT);
+		this->_data->assets.LoadFont("arial","Resources/fonts/ARIAL.TTF");
 
 		/*
 			for play button
@@ -47,7 +51,7 @@ namespace GameEngine{
 		this->_option.setPosition(this->_playButton.getPosition().x , this->_playButton.getPosition().y + 100);
 		this->_options.setFont(this->_data->assets.GetFont("Felt"));
 		this->_options.setPosition(this->_option.getPosition().x + 60 , this->_option.getPosition().y + 5);
-		this->_options.setString("OPTIONS");
+		this->_options.setString("THEMES");
 
 		/*
 			For exit button
@@ -86,7 +90,7 @@ namespace GameEngine{
 			}
 			if (this->_data->input.IsSpriteClicked(this->_option, sf::Mouse::Left, this->_data->window))
 			{
-				
+				this->_data->machine.AddState(StateRef(new Options(_data)),false);
 			}
 			if(this->_exit_btn.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->_data->window)))){
 				this->_exit_btn.setScale(1.25,1.25);
@@ -106,7 +110,11 @@ namespace GameEngine{
 	}
 	void MainMenuState::Draw(float dt)
 	{
-		this->_data->window.clear(sf::Color(142,237,210));
+		if(this->_data->isdefaultTheme){
+			this->_data->window.clear(sf::Color(this->_data->themeDefault->getMainMenuR(),this->_data->themeDefault->getMainMenuG(),this->_data->themeDefault->getMainMenuB()));
+		}else{
+			this->_data->window.clear(sf::Color(this->_data->themeNew->getMainMenuR(),this->_data->themeNew->getMainMenuG(),this->_data->themeNew->getMainMenuB()));
+		}
 		this->_data->window.draw(this->_playButton);
 		this->_data->window.draw(this->_playButtonOuter);
 		this->_data->window.draw(this->_play);
