@@ -1,5 +1,18 @@
 #include "Game.hpp"
 #include "MainMenuState.hpp"
+namespace std
+{
+	bool getcolortheme(){
+		string ct;	
+		fstream color;
+		color.open("colorscheme.txt");	
+		getline(color,ct,'\n');
+		if(ct=="true")
+			return true;
+		else
+			return false;
+	}
+}
 namespace GameEngine
 {
 	Game::Game(int width, int height, std::string title)

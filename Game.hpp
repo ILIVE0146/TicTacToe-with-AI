@@ -7,7 +7,12 @@
 #include "AssetManager.hpp"
 #include "InputManager.hpp"
 #include "rgba.hpp"
-
+#include <fstream>
+#include <sstream>
+#include <string>
+namespace std{
+	bool getcolortheme();
+}
 namespace GameEngine
 {
 	struct GameData
@@ -16,7 +21,7 @@ namespace GameEngine
 		sf::RenderWindow window;
 		AssetManager assets;
 		InputManager input;
-		bool isdefaultTheme = true;
+		bool isdefaultTheme = std::getcolortheme();
 		rgba *themeDefault;
 		rgba *themeNew;
 	};

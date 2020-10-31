@@ -1,5 +1,31 @@
 #include "options.hpp"
 #include "MainMenuState.hpp"
+
+namespace std{
+    string getct(){
+		string ct;	
+		fstream color;
+		color.open("colorscheme.txt");	
+		getline(color,ct,'\n');
+		color.close();
+		return ct;
+	}
+    void changethemevalue(){
+        string ct;	
+		fstream color;
+		color.open("colorscheme.txt");	
+		getline(color,ct,'\n');
+        if(ct=="true")
+            color<<"false";
+        else
+        {
+            color<<"true";
+        }
+        
+		color.close();
+    }
+}
+
 namespace GameEngine{
     Options::Options(GameDataRef data): _data(data){}
     void Options::Init(){
@@ -20,6 +46,7 @@ namespace GameEngine{
     }
     void Options::HandleInput(){
         sf::Event event;
+        
         while(this->_data->window.pollEvent(event)){
             if(sf::Event::Closed == event.type){
                 this->_data->window.close();
@@ -27,7 +54,17 @@ namespace GameEngine{
             else if(this->_data->input.IsSpriteClicked(this->back,sf::Mouse::Left,this->_data->window)){
                 this->_data->machine.RemoveState();
             }else if(this->_data->input.IsSpriteClicked(this->theme,sf::Mouse::Left,this->_data->window)){
+                // std::ofstream color;
+                // color.open("colorscheme.txt");
+                // color<<"ASDFADSF";
+                // std::string ct = std::getct();
                 this->_data->isdefaultTheme = !this->_data->isdefaultTheme;
+                std::changethemevalue();
+                // if(ct=="true")
+                //     color<<"false";
+                // else
+                //     color<<"true";
+                // color.close();
             }
         }
     }

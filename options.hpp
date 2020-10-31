@@ -1,7 +1,11 @@
-#pragma pnce
+#pragma once
 #include "state.hpp"
 #include "Game.hpp"
 #include "DEFINITIONS.hpp"
+#include <string>
+#include <fstream>
+#include <sstream>
+std::string getct();
 namespace GameEngine{
 	class Options:public State{
 		public:
