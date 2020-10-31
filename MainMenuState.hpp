@@ -6,6 +6,7 @@ namespace GameEngine{
 	class MainMenuState : public State{
 	public:
 		MainMenuState(GameDataRef data);
+		void boolIsdefaultTheme();
 		void Init();
 		void HandleInput();
 		void Update(float dt);

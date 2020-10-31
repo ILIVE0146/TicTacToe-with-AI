@@ -1,28 +1,17 @@
 #include "Game.hpp"
 #include "MainMenuState.hpp"
-namespace std
-{
-	bool getcolortheme(){
-		string ct;	
-		fstream color;
-		color.open("colorscheme.txt");	
-		getline(color,ct,'\n');
-		if(ct=="true")
-			return true;
-		else
-			return false;
-	}
-}
 namespace GameEngine
 {
 	Game::Game(int width, int height, std::string title)
 	{
+		
 		_data->window.create(sf::VideoMode(width, height), title, sf::Style::Close | sf::Style::Titlebar);
 		_data->window.setFramerateLimit(60);
 		_data->machine.AddState(StateRef(new MainMenuState(this->_data)));
-
 		this->Run();
 	}
+
+
 
 	void Game::Run()
 	{

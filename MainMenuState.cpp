@@ -4,9 +4,12 @@
 #include "playOptionState.hpp"
 #include "options.hpp"
 #include "rgba.hpp"
+#include <fstream>
+#include <iostream>
 namespace GameEngine{
 	MainMenuState::MainMenuState(GameDataRef data) : _data(data){ }
 	void MainMenuState::Init(){
+		this->boolIsdefaultTheme();
 		/*
 			For loading data
 		*/
@@ -104,6 +107,22 @@ namespace GameEngine{
 			}
 		}
 	}
+
+	void MainMenuState::boolIsdefaultTheme(){
+		std::fstream fileForRead("data.ini");
+		int tempString = 1;
+		if(fileForRead.is_open()){
+			fileForRead >> tempString ;
+		}
+		fileForRead.close();
+		if(tempString == 0 ){
+			this->_data->isdefaultTheme = false;
+		}
+		else{
+			this->_data->isdefaultTheme = true;
+		}
+	}
+
 	void MainMenuState::Update(float dt)
 	{
 		

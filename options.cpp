@@ -1,31 +1,6 @@
 #include "options.hpp"
 #include "MainMenuState.hpp"
 
-namespace std{
-    string getct(){
-		string ct;	
-		fstream color;
-		color.open("colorscheme.txt");	
-		getline(color,ct,'\n');
-		color.close();
-		return ct;
-	}
-    void changethemevalue(){
-        string ct;	
-		fstream color;
-		color.open("colorscheme.txt");	
-		getline(color,ct,'\n');
-        if(ct=="true")
-            color<<"false";
-        else
-        {
-            color<<"true";
-        }
-        
-		color.close();
-    }
-}
-
 namespace GameEngine{
     Options::Options(GameDataRef data): _data(data){}
     void Options::Init(){
@@ -59,13 +34,19 @@ namespace GameEngine{
                 // color<<"ASDFADSF";
                 // std::string ct = std::getct();
                 this->_data->isdefaultTheme = !this->_data->isdefaultTheme;
-                std::changethemevalue();
+                this->changeThemeUsingFile();
                 // if(ct=="true")
                 //     color<<"false";
                 // else
                 //     color<<"true";
                 // color.close();
             }
+        }
+    }
+    void Options::changeThemeUsingFile(){
+        std::fstream WriteToFile("data.ini");
+        if(WriteToFile.is_open()){
+            WriteToFile << this->_data->isdefaultTheme;
         }
     }
     void Options::Update(float dt){

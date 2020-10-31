@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #include <memory>
 #include <string>
 #include <SFML/Graphics.hpp>
@@ -9,10 +9,6 @@
 #include "rgba.hpp"
 #include <fstream>
 #include <sstream>
-#include <string>
-namespace std{
-	bool getcolortheme();
-}
 namespace GameEngine
 {
 	struct GameData
@@ -21,7 +17,7 @@ namespace GameEngine
 		sf::RenderWindow window;
 		AssetManager assets;
 		InputManager input;
-		bool isdefaultTheme = std::getcolortheme();
+		bool isdefaultTheme = true;
 		rgba *themeDefault;
 		rgba *themeNew;
 	};
@@ -40,6 +36,7 @@ namespace GameEngine
 
 		GameDataRef _data = std::make_shared<GameData>();
 
+		
 		void Run();
 	};
 }

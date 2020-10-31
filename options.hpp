@@ -2,15 +2,14 @@
 #include "state.hpp"
 #include "Game.hpp"
 #include "DEFINITIONS.hpp"
-#include <string>
 #include <fstream>
-#include <sstream>
-std::string getct();
+#include <iostream>
 namespace GameEngine{
 	class Options:public State{
 		public:
 			Options(GameDataRef data);
 			void Init();
+			void changeThemeUsingFile();
 			void HandleInput();
 			void Update(float dt);
 			void Draw(float dt);
